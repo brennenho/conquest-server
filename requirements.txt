@@ -1,1 +1,6 @@
 fastapi
+requests
+beautifulsoup4
+lxml
+psycopg2
+# sqlalchemy

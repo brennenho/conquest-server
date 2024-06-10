@@ -1,0 +1,16 @@
+services:
+  conquest-db:
+    container_name: conquest-db
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=conquest_user
+      - POSTGRES_PASSWORD=conquest_password
+      - POSTGRES_DB=conquest_core
+    volumes:
+      - conquestdb:/var/lib/postgresql/data
+
+volumes:
+  conquestdb:
+    name: conquest-data
