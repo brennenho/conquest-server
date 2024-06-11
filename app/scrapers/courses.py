@@ -27,17 +27,7 @@ class CourseParser:
                         " of "
                     )
                     found_sections[id] = [int(capacity[0]), int(capacity[1])]
-                    # found_sections.append(
-                    #     Section(id, int(capacity[0]), int(capacity[1]))
-                    # )
             except:
                 logger.warning("Error parsing course.")
 
         return found_sections
-
-
-class Section:
-    def __init__(self, id="", registered=0, total=0):
-        self.id = id
-        self.registered = registered
-        self.total = total

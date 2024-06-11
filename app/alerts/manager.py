@@ -3,7 +3,9 @@ from app.scrapers.courses import CourseParser
 
 
 class AlertManager:
-    def check_sections(self):
+
+    @staticmethod
+    async def check_sections():
         client = PostgresClient()
         parser = CourseParser()
         watchlist = client.get_watchlist()
