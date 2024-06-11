@@ -30,6 +30,15 @@ class PostgresClient:
         )
         self.conn.commit()
 
+    def get_watchlist(self):
+        try:
+            self.cursor.execute(Queries.GET_WATCHLIST)
+            rows = self.cursor.fetchall()
+            return rows
+        except Exception as e:
+            logger.error(f"Error fetching watchlist: {e}")
+            return []
+
     def delete_from_watchlist(self, section_id: str):
         self.cursor.execute(Queries.DELETE_FROM_WATCHLIST, (section_id,))
         self.conn.commit()

@@ -1,6 +1,6 @@
 CREATE_TABLE = """
                 CREATE TABLE IF NOT EXISTS watchlist (
-                    section_id VARCHAR(6) PRIMARY KEY,
+                    section_id VARCHAR(50) PRIMARY KEY,
                     department VARCHAR(4) NOT NULL,
                     emails JSONB NOT NULL
                 );
@@ -14,3 +14,5 @@ ADD_TO_WATCHLIST = """
                 """
 
 DELETE_FROM_WATCHLIST = "DELETE FROM watchlist WHERE section_id = %s;"
+
+GET_WATCHLIST = "SELECT * FROM watchlist;"
