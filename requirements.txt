@@ -3,4 +3,5 @@ requests
 beautifulsoup4
 lxml
 psycopg2
+dotenv
 # sqlalchemy

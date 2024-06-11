@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-from app.util.constants import BASE_URL, TERM_URL
+from app.utils.constants import BASE_URL, TERM_URL
 
 
 class CourseParser:
