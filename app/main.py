@@ -23,3 +23,8 @@ app = FastAPI(lifespan=lifespan)
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+
+
+from app.alerts.mail import send_course_alert
+
+send_course_alert("CSCI 104", "12345R")
