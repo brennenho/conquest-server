@@ -4,4 +4,4 @@ beautifulsoup4
 lxml
 psycopg2
 python-dotenv
-# sqlalchemy
+pyjwt
