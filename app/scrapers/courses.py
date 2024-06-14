@@ -1,8 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
 
-from app.utils.constants import BASE_URL, TERM_URL
+# from app.utils.constants import BASE_URL, TERM_URL
 from app.utils.logger import get_logger
+
+BASE_URL = "https://classes.usc.edu/"
+TERM_URL = "term-20243/"
 
 logger = get_logger(__name__)
 

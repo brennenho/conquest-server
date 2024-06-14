@@ -24,11 +24,14 @@ class PostgresClient:
         except psycopg2.OperationalError as e:
             raise Exception("Unable to connect to Postgres.")
 
-    def add_to_watchlist(self, section_id: str, department: str, emails: dict):
-        self.cursor.execute(
-            Queries.ADD_TO_WATCHLIST, (section_id, department, json.dumps(emails))
-        )
-        self.conn.commit()
+    def add_to_watchlist(self, section_id: str, department: str, email: str):
+        self.cursor.execute(Queries.SEARCH_WATCHLIST, (section_id,))
+        search = self.cursor.fetchone()
+        if search == None or email not in search[2]:
+            self.cursor.execute(
+                Queries.ADD_TO_WATCHLIST, (section_id, department, json.dumps(email))
+            )
+            self.conn.commit()
 
     def get_watchlist(self):
         try:
@@ -42,6 +45,16 @@ class PostgresClient:
     def delete_from_watchlist(self, section_id: str):
         self.cursor.execute(Queries.DELETE_FROM_WATCHLIST, (section_id,))
         self.conn.commit()
+
+    def delete_email_from_watchlist(self, section_id: str, email: str):
+        try:
+            self.cursor.execute(
+                Queries.DELETE_EMAIL_FROM_WATCHLIST,
+                (section_id, section_id, email, section_id, email, section_id),
+            )
+            self.conn.commit()
+        except Exception as e:
+            logger.error(f"Error deleting email from watchlist: {e}")
 
     def __del__(self):
         try:
