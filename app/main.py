@@ -21,8 +21,8 @@ async def lifespan(app: FastAPI):
     await task
 
 
-# app = FastAPI(lifespan=lifespan)
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
+# app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
