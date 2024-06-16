@@ -11,20 +11,27 @@ class AlertManager:
         client = PostgresClient()
         parser = CourseParser()
         watchlist = client.get_watchlist()
+        print(watchlist)
         departments = {}
+        sections = set()
+        notifiedSections = set()
 
-        for section in watchlist:
-            id = section[0]
-            dep = section[1]
+        for entry in watchlist:
+            print(entry)
+            id = entry[1]
+            dep = entry[2]
             if dep not in departments:
                 departments[dep] = parser.scrape_deparment(dep)
 
             seats = departments[dep][id]
-            print(watchlist)
             if seats[0] < seats[1]:
-                emails = [section[2]] if isinstance(section[2], str) else section[2]
+                notifiedSections.add(id)
+                email = entry[3]
+                # send_course_alert(email, id, seats[1] - seats[0])
+                print(
+                    f"Alerting {email} about section {id} having {seats[1] - seats[0]} seats."
+                )
 
-                for email in emails:
-                    print("Sending email to: ", email)
-                    send_course_alert(email, id, seats[1] - seats[0])
-                client.delete_from_watchlist(id)
+        for section in notifiedSections:
+            client.delete_from_watchlist(section)
+            pass

@@ -25,13 +25,8 @@ class PostgresClient:
             raise Exception("Unable to connect to Postgres.")
 
     def add_to_watchlist(self, section_id: str, department: str, email: str):
-        self.cursor.execute(Queries.SEARCH_WATCHLIST, (section_id,))
-        search = self.cursor.fetchone()
-        if search == None or email not in search[2]:
-            self.cursor.execute(
-                Queries.ADD_TO_WATCHLIST, (section_id, department, json.dumps(email))
-            )
-            self.conn.commit()
+        self.cursor.execute(Queries.ADD_TO_WATCHLIST, (section_id, department, email))
+        self.conn.commit()
 
     def get_watchlist(self):
         try:
@@ -47,14 +42,11 @@ class PostgresClient:
         self.conn.commit()
 
     def delete_email_from_watchlist(self, section_id: str, email: str):
-        try:
-            self.cursor.execute(
-                Queries.DELETE_EMAIL_FROM_WATCHLIST,
-                (section_id, section_id, email, section_id, email, section_id),
-            )
-            self.conn.commit()
-        except Exception as e:
-            logger.error(f"Error deleting email from watchlist: {e}")
+        self.cursor.execute(
+            Queries.DELETE_EMAIL_FROM_WATCHLIST,
+            (section_id, email),
+        )
+        self.conn.commit()
 
     def __del__(self):
         try:
