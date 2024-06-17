@@ -1,6 +1,6 @@
 import requests
 import json
-
+import codecs
 BASE_URL = "https://www.ratemyprofessors.com/graphql"
 PAYLOAD_PART_1 = "{\"query\":\"query TeacherSearchPaginationQuery(\\n  $count: Int!\\n  $cursor: String\\n  $query: TeacherSearchQuery!\\n) {\\n  search: newSearch {\\n    ...TeacherSearchPagination_search_1jWD3d\\n  }\\n}\\n\\nfragment TeacherSearchPagination_search_1jWD3d on newSearch {\\n  teachers(query: $query, first: $count, after: $cursor) {\\n    didFallback\\n    edges {\\n      cursor\\n      node {\\n        ...TeacherCard_teacher\\n        id\\n        __typename\\n      }\\n    }\\n    pageInfo {\\n      hasNextPage\\n      endCursor\\n    }\\n    resultCount\\n    filters {\\n      field\\n      options {\\n        value\\n        id\\n      }\\n    }\\n  }\\n}\\n\\nfragment TeacherCard_teacher on Teacher {\\n  id\\n  legacyId\\n  avgRating\\n  numRatings\\n  ...CardFeedback_teacher\\n  ...CardSchool_teacher\\n  ...CardName_teacher\\n  ...TeacherBookmark_teacher\\n}\\n\\nfragment CardFeedback_teacher on Teacher {\\n  wouldTakeAgainPercent\\n  avgDifficulty\\n}\\n\\nfragment CardSchool_teacher on Teacher {\\n  department\\n  school {\\n    name\\n    id\\n  }\\n}\\n\\nfragment CardName_teacher on Teacher {\\n  firstName\\n  lastName\\n}\\n\\nfragment TeacherBookmark_teacher on Teacher {\\n  id\\n  isSaved\\n}\\n\",\"variables\":{\"count\":"
 PAYLOAD_PART_2 = ",\"cursor\":\""
@@ -33,7 +33,13 @@ class rmpParser():
       'sec-ch-ua-mobile': '?0',
       'sec-ch-ua-platform': '"Windows"'
     }
-    
+  def export_as_json():
+    """Exports all professors at USC
+    """
+    x = rmpParser()
+    json_object = json.dumps(x.scrape_all_professors(), indent=4, ensure_ascii=False)
+    with codecs.open("professors.json", "w", 'utf-8') as outfile:
+      outfile.write(json_object)
   def scrape_all_professors(self) -> dict:
     """Parses all professor at USC
 
