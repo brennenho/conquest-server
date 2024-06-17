@@ -48,6 +48,10 @@ class PostgresClient:
         )
         self.conn.commit()
 
+    def search_watchlist(self, section_id: str, email: str):
+        self.cursor.execute(Queries.SEARCH_WATCHLIST, (section_id, email))
+        return self.cursor.fetchone()
+
     def __del__(self):
         try:
             self.cursor.close()
