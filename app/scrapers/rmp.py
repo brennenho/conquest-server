@@ -37,7 +37,7 @@ class rmpParser:
             "sec-ch-ua-platform": '"Windows"',
         }
 
-    def export_as_json():
+    def export_as_json(self):
         """Exports all professors at USC"""
         x = rmpParser()
         json_object = json.dumps(
@@ -76,17 +76,17 @@ class rmpParser:
         else:
             raise RuntimeError("Error parsing first setup of scrapes")
 
-    def scrape_professors(self, count: int = 10) -> dict:
+    def scrape_professors(self, count: str = "10") -> dict:
         """scrapes professor data from ratemyprofessor
 
         Args:
-            count (int, optional): The number of professor entries to scrape. Defaults to 10.
+            count (str, optional): The number of professor entries to scrape. Defaults to 10.
 
         Returns:
             dict: Formatted json file for professor information. See parse_json() for more information.
         """
         self.payload = (
-            PAYLOAD_PART_1 + str(count) + PAYLOAD_PART_2 + self.cursor + PAYLOAD_PART_3
+            PAYLOAD_PART_1 + count + PAYLOAD_PART_2 + self.cursor + PAYLOAD_PART_3
         )
         response = requests.request(
             "POST", BASE_URL, headers=self.headers, data=self.payload
@@ -95,6 +95,7 @@ class rmpParser:
             return self.parse_json(response.json())
         else:
             print("Error scraping")
+        return {}
 
     def parse_json(self, json: dict) -> dict:
         """parses graphql responses from ratemyprofessor to give streamline format to store
