@@ -39,9 +39,8 @@ class rmpParser:
 
     def export_as_json(self):
         """Exports all professors at USC"""
-        x = rmpParser()
         json_object = json.dumps(
-            x.scrape_all_professors(), indent=4, ensure_ascii=False
+            self.scrape_all_professors(), indent=4, ensure_ascii=False
         )
         with codecs.open("professors.json", "w", "utf-8") as outfile:
             outfile.write(json_object)
