@@ -1,40 +1,27 @@
-
 import requests
-from bs4 import BeautifulSoup
+import json
 
+url = "https://www.ratemyprofessors.com/graphql"
 
-class CourseParser:
+payload = "{\"query\":\"query TeacherSearchPaginationQuery(\\n  $count: Int!\\n  $cursor: String\\n  $query: TeacherSearchQuery!\\n) {\\n  search: newSearch {\\n    ...TeacherSearchPagination_search_1jWD3d\\n  }\\n}\\n\\nfragment TeacherSearchPagination_search_1jWD3d on newSearch {\\n  teachers(query: $query, first: $count, after: $cursor) {\\n    didFallback\\n    edges {\\n      cursor\\n      node {\\n        ...TeacherCard_teacher\\n        id\\n        __typename\\n      }\\n    }\\n    pageInfo {\\n      hasNextPage\\n      endCursor\\n    }\\n    resultCount\\n    filters {\\n      field\\n      options {\\n        value\\n        id\\n      }\\n    }\\n  }\\n}\\n\\nfragment TeacherCard_teacher on Teacher {\\n  id\\n  legacyId\\n  avgRating\\n  numRatings\\n  ...CardFeedback_teacher\\n  ...CardSchool_teacher\\n  ...CardName_teacher\\n  ...TeacherBookmark_teacher\\n}\\n\\nfragment CardFeedback_teacher on Teacher {\\n  wouldTakeAgainPercent\\n  avgDifficulty\\n}\\n\\nfragment CardSchool_teacher on Teacher {\\n  department\\n  school {\\n    name\\n    id\\n  }\\n}\\n\\nfragment CardName_teacher on Teacher {\\n  firstName\\n  lastName\\n}\\n\\nfragment TeacherBookmark_teacher on Teacher {\\n  id\\n  isSaved\\n}\\n\",\"variables\":{\"count\":10,\"cursor\":\"YXJyYXljb25uZWN0aW9uOjc=\",\"query\":{\"text\":\"\",\"schoolID\":\"U2Nob29sLTEzODE=\",\"fallback\":true,\"departmentID\":null}}}"
+headers = {
+  'Accept': '*/*',
+  'Accept-Language': 'en-US,en;q=0.9',
+  'Authorization': 'Basic dGVzdDp0ZXN0',
+  'Connection': 'keep-alive',
+  'Content-Type': 'application/json',
+  'Cookie': 'ccpa-notice-viewed-02=true; cid=5QXcDf7gCd-20240308',
+  'Origin': 'https://www.ratemyprofessors.com',
+  'Referer': 'https://www.ratemyprofessors.com/search/professors/1381?q=*',
+  'Sec-Fetch-Dest': 'empty',
+  'Sec-Fetch-Mode': 'cors',
+  'Sec-Fetch-Site': 'same-origin',
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+  'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+  'sec-ch-ua-mobile': '?0',
+  'sec-ch-ua-platform': '"Windows"'
+}
 
-    def scrape_deparment(self):
-        response = requests.get("https://www.ratemyprofessors.com/search/professors/1381")
-        soup = BeautifulSoup(response.text, "lxml")
-        courses = soup.find_all('script')
-        found_sections = []
-        for course in courses:
-            if "window.__RELAY_STORE__" in course.text: 
-                scores = self.parseRating(course.text)
-                id = self.parseID(course.text)
-                return {id[i]:scores[i] for i in range(len(scores))}
-        return "No ratings found"
-    
-    def parseRating(self, html: str):
-        scores_found = []
-        while (html.find('avgRating') != -1):
-            rating = html[html.find('avgRating')+11:html.find('numRatings')-2]
-            html = html[html.find('numRatings')+3:]
-            scores_found.append(rating)
-        return scores_found
-    
-    def parseID(self, html: str):
-        id_found = []
-        while (html.find('legacyId') != -1):
-            rating = html[html.find('legacyId')+10:html.find('avgRating')-2]
-            html = html[html.find('avgRating')+3:]
-            id_found.append(rating)
-        return id_found
-            
-        
+response = requests.request("POST", url, headers=headers, data=payload)
 
-x = CourseParser()
-print(x.scrape_deparment())
-       
+print(response.text)
