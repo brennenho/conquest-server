@@ -3,8 +3,10 @@ import requests
 
 MAILGUN_API_URL = "https://api.mailgun.net/v3/brennen.dev/messages"
 
+# use mailgun api to send emails
 
-def send_watchlist_confirmation(email: str, section: str):
+
+def send_watchlist_confirmation(email: str, section: str) -> requests.Response:
     return requests.post(
         MAILGUN_API_URL,
         auth=("api", os.environ.get("MAILGUN_API_KEY")),
@@ -17,7 +19,7 @@ def send_watchlist_confirmation(email: str, section: str):
     )
 
 
-def send_course_alert(email: str, section: str, seats: int):
+def send_course_alert(email: str, section: str, seats: int) -> requests.Response:
     return requests.post(
         MAILGUN_API_URL,
         auth=("api", os.environ.get("MAILGUN_API_KEY")),
