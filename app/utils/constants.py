@@ -29,4 +29,3 @@ RMP_PAYLOAD_HEADER = {
 }
 
 MAILGUN_API_URL = "https://api.mailgun.net/v3/brennen.dev/messages"
-
