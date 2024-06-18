@@ -18,8 +18,7 @@ class RmpParser:
     """
 
     def __init__(self) -> None:
-
-        self.payload = str
+        self.payload = ""
         self.cursor = str
         self.parsed_all = False
         self.headers = RMP_PAYLOAD_HEADER
@@ -62,7 +61,7 @@ class RmpParser:
         else:
             raise RuntimeError("Error parsing first setup of scrapes")
 
-    def scrape_professors(self, count) -> dict:
+    def scrape_professors(self, count: int = 10) -> dict:
         """scrapes professor data from ratemyprofessor
 
         Args:
