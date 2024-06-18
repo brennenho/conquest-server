@@ -11,7 +11,7 @@ logger = get_logger(__name__)
 
 class AlertManager:
     _instance = None
-    _passwords: dict[str, list] = {}
+    _passwords: dict[str, str] = {}
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
