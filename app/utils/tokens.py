@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, UTC
 
 
 def validate_key(key: str) -> bool:
-    return key == os.environ.get("CONQUEST_KEY")
+    return key == os.environ.get("ADMIN_KEY")
 
 
 def get_token_secret() -> str | None:
