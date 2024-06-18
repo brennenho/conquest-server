@@ -1,7 +1,7 @@
 import os
 import requests
 
-MAILGUN_API_URL = "https://api.mailgun.net/v3/brennen.dev/messages"
+from app.utils.constants import MAILGUN_API_URL
 
 # use mailgun api to send emails
 MAILGUN_API_KEY = os.environ.get("MAILGUN_API_KEY")

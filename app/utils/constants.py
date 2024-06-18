@@ -5,3 +5,5 @@ ALLOWED_ORIGINS = [
     "chrome-extension://ijnageikchmnfaoadoiibnncahopcnnh",
     "https://webreg.usc.edu",
 ]
+
+MAILGUN_API_URL = "https://api.mailgun.net/v3/brennen.dev/messages"
