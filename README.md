@@ -8,6 +8,7 @@ A python Fast API to serve [Conquest](https://github.com/brennenho/conquest), a 
 ## Running Server
 1. Copy `.env` values from [`.env.sample`](.env.sample)
 2. `docker compose up -d`: start postgres database with Docker
-3. `pip install -r requirements.txt`: install server dependencies
-4. `pip install -r requirements-dev.txt`: install developer tools (optional)
-5. `make runuvicorn`: start Fast API on port 3002
+3. `python3 -m venv venv`: create a virtual env
+4. `pip install -r requirements.txt`: install server dependencies
+5. `pip install -r requirements-dev.txt`: install developer tools (optional)
+6. `make runuvicorn`: start Fast API on port 3002

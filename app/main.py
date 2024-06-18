@@ -7,12 +7,12 @@ from contextlib import asynccontextmanager
 from app.routers import users, watchlist
 from app.alerts.scheduler import continuous_check
 from app.utils.logger import get_logger
-from app.dependencies import get_auth_header
 from app.utils.constants import ALLOWED_ORIGINS
 
 logger = get_logger(__name__)
 
 
+# checks watchlist every interval while server is running
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     task = asyncio.create_task(continuous_check())
@@ -24,6 +24,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 # app = FastAPI()
 
+# authentication to validate api requests
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
@@ -34,14 +35,3 @@ app.add_middleware(
 
 app.include_router(users.router)
 app.include_router(watchlist.router)
-
-
-from app.api.courses import CourseClient
-from app.scrapers.courses import CourseParser
-
-
-@app.get("/")
-async def root():
-    CourseClient().get_department("csci")
-    CourseParser().scrape_deparment("csci")
-    # return {"message": message}

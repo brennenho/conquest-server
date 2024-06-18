@@ -27,3 +27,6 @@ RMP_PAYLOAD_HEADER = {
     "sec-ch-ua-mobile": "?0",
     "sec-ch-ua-platform": '"Windows"',
 }
+
+MAILGUN_API_URL = "https://api.mailgun.net/v3/brennen.dev/messages"
+

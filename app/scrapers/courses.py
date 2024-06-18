@@ -12,9 +12,13 @@ logger = get_logger(__name__)
 
 class CourseParser:
 
-    def scrape_deparment(self, dep: str):
+    # scrape section info by department
+    def scrape_deparment(self, dep: str) -> dict:
+        # get website code
         response = requests.get(BASE_URL + TERM_URL + "classes/" + dep)
         soup = BeautifulSoup(response.text, "lxml")
+
+        # use BeautifulSoup to parse website code
         courses = soup.find_all("div", class_="course-info")
         found_sections = {}
         for course in courses:

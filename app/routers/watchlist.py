@@ -13,7 +13,7 @@ router = APIRouter(prefix="/watchlist", tags=["watchlist"])
 @router.post("/add")
 def add(
     section_id: str = Body(...), department: str = Body(...), email: str = Body(...)
-):
+) -> JSONResponse:
     try:
         # send_watchlist_confirmation(email, section_id)
         PostgresClient().add_to_watchlist(section_id, department, email)
@@ -24,7 +24,7 @@ def add(
 
 
 @router.post("/delete")
-def delete(section_id: str = Body(...), email: str = Body(...)):
+def delete(section_id: str = Body(...), email: str = Body(...)) -> JSONResponse:
     try:
         PostgresClient().delete_email_from_watchlist(section_id=section_id, email=email)
         return JSONResponse(content="success", status_code=200)
@@ -34,7 +34,8 @@ def delete(section_id: str = Body(...), email: str = Body(...)):
 
 
 @router.post("/search")
-def search(section_id: str = Body(...), email: str = Body(...)):
+def search(section_id: str = Body(...), email: str = Body(...)) -> JSONResponse:
+    logger.info(f"Searching for {section_id} in {email}'s watchlist.")
     try:
         response = PostgresClient().search_watchlist(section_id=section_id, email=email)
         if response:
