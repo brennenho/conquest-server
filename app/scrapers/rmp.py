@@ -62,7 +62,7 @@ class RmpParser:
         else:
             raise RuntimeError("Error parsing first setup of scrapes")
 
-    def scrape_professors(self, count: int = 10) -> dict:
+    def scrape_professors(self, count) -> dict:
         """scrapes professor data from ratemyprofessor
 
         Args:
