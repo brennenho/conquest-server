@@ -1,6 +1,15 @@
 import requests
 import json
-from app.utils.constants import RMP_BASE_URL, RMP_PAYLOAD_HEADER, RMP_PAYLOAD_PART_1, RMP_PAYLOAD_PART_2, RMP_PAYLOAD_PART_3, RMP_FIRST_PAYLOAD
+from app.utils.constants import (
+    RMP_BASE_URL,
+    RMP_PAYLOAD_HEADER,
+    RMP_PAYLOAD_PART_1,
+    RMP_PAYLOAD_PART_2,
+    RMP_PAYLOAD_PART_3,
+    RMP_FIRST_PAYLOAD,
+)
+
+
 class RmpParser:
     """
     Scrapes ratemyprofessor using graphql api payloads to load more professors a once.
@@ -62,13 +71,7 @@ class RmpParser:
         Returns:
             dict: Formatted json file for professor information. See parse_json() for more information.
         """
-        self.payload = (
-            RMP_PAYLOAD_PART_1
-            + str(count)
-            + RMP_PAYLOAD_PART_2
-            + self.cursor
-            + RMP_PAYLOAD_PART_3
-        )
+        self.payload = f"{RMP_PAYLOAD_PART_1}{count}{RMP_PAYLOAD_PART_2}{self.cursor}{RMP_PAYLOAD_PART_3}"
         response = requests.request(
             "POST", RMP_BASE_URL, headers=self.headers, data=self.payload
         )
