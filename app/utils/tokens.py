@@ -2,6 +2,8 @@ import os
 import jwt
 
 from datetime import datetime, timedelta, UTC
+import random
+import string
 
 
 def validate_key(key: str) -> bool:
@@ -27,3 +29,15 @@ def encode_token(payload: dict) -> str:
         get_token_secret(),
         algorithm="HS256",
     )
+
+
+def generate_random_pass() -> str:
+    """
+    Generate a random one-time password.
+
+    Returns:
+        str: A 6-character alphanumeric password.
+    """
+    characters = string.ascii_uppercase + string.digits
+    password = "".join(random.choice(characters) for _ in range(6))
+    return password

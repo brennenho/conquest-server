@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from jwt.exceptions import InvalidTokenError
 
 from app.utils.tokens import validate_key, encode_token, decode_token
+from app.alerts.manager import AlertManager
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -25,3 +26,18 @@ def validate_token(token: str = Body(...)):
         return JSONResponse(content={"valid": True}, status_code=200)
     except InvalidTokenError:
         return JSONResponse(content={"valid": False}, status_code=401)
+
+
+@router.post("/get-password")
+async def get_password(email: str = Body(...)):
+    manager = AlertManager()
+    password = await manager.generate_password(email)
+    return JSONResponse(content=password, status_code=200)
+
+
+@router.post("/validate-password")
+def validate_password(email: str = Body(...), password: str = Body(...)):
+    manager = AlertManager()
+    return JSONResponse(
+        content=manager.validate_password(email, password), status_code=200
+    )
