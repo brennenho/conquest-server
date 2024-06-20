@@ -66,10 +66,10 @@ class RmpParser:
 
         Args:
             count (int, optional): The number of professor entries to scrape. Defaults to 10.
-            
+
         Raises:
             RuntimeError: unable to scrape the next batch of professors
-            
+
         Returns:
             dict: Formatted json file for professor information. See parse_json() for more information.
         """

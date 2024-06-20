@@ -23,7 +23,9 @@ ADD_TO_PROFESSORLIST = """
                 VALUES (%s, %s, %s, %s, %s);
                 """
 
-SEARCH_PROFESSOR = "SELECT * FROM professorlist WHERE first_name = %s AND last_name = %s"
+SEARCH_PROFESSOR = (
+    "SELECT * FROM professorlist WHERE first_name = %s AND last_name = %s"
+)
 
 ADD_TO_WATCHLIST = """
                 INSERT INTO watchlist (section_id, department, email)

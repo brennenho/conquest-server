@@ -41,7 +41,8 @@ class PostgresClient:
         rating: str,
     ) -> None:
         self.cursor.execute(
-            Queries.ADD_TO_PROFESSORLIST, (legacy_id, first_name, last_name, department, rating)
+            Queries.ADD_TO_PROFESSORLIST,
+            (legacy_id, first_name, last_name, department, rating),
         )
         self.conn.commit()
 
