@@ -101,9 +101,8 @@ class RmpParser:
             prof_department = node["department"]
             prof_profile = {
                 "department": prof_department,
-                "id": prof_id,
-                "legacyid": prof_legacyid,
-                "rating": prof_rating,
+                "legacyid": str(prof_legacyid),
+                "rating": str(prof_rating),
             }
             # Setting the key to which to access the profile of each professor, can change if needed
             professor_profiles[first_name + last_name] = prof_profile
