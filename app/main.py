@@ -4,7 +4,7 @@ from fastapi import FastAPI, Depends, Body
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from app.routers import users, watchlist
+from app.routers import users, watchlist, admin
 from app.alerts.scheduler import continuous_check
 from app.utils.logger import get_logger
 from app.utils.constants import ALLOWED_ORIGINS
@@ -33,5 +33,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(admin.router)
 app.include_router(users.router)
 app.include_router(watchlist.router)
