@@ -107,7 +107,7 @@ class RmpParser:
                 "rating": str(prof_rating),
             }
             # Setting the key to which to access the profile of each professor, can change if needed
-            professor_profiles[prof_legacyid] = prof_profile
+            professor_profiles[str(prof_legacyid)] = prof_profile
         # making sure we keep a bookmark to where we last searched
         self.cursor = json["data"]["search"]["teachers"]["pageInfo"]["endCursor"]
         self.parsed_all = not json["data"]["search"]["teachers"]["pageInfo"][

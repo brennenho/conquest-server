@@ -8,20 +8,20 @@ CREATE_TABLE_WATCHLIST = """
                 );
                 """
 
-CREATE_TABLE_PROFESSORLIST = """"
+CREATE_TABLE_PROFESSORLIST = """
                 CREATE TABLE IF NOT EXISTS professorlist (
                     legacy_id VARCHAR(10) PRIMARY KEY,
-                    first_name VARCHAR(50) NOT NULL,
-                    last_name VARCHAR(50) NOT NULL,
-                    department VARCHAR(4) NOT NULL,
-                    rating VARCHAR(5) NOT NULL
+                    first_name VARCHAR(25) NOT NULL,
+                    last_name VARCHAR(25) NOT NULL,
+                    department VARCHAR(50) NOT NULL,
+                    rating VARCHAR(3) NOT NULL
                     );
                     """
 
 ADD_TO_PROFESSORLIST = """
-                INSERT INTO professorlist (legacy_id, first_name, last_name, department, rating)
-                VALUES (%s, %s, %s, %s, %s);
-                """
+            INSERT INTO professorlist (legacy_id, first_name, last_name, department, rating)
+            VALUES (%s, %s, %s, %s, %s)
+        """
 
 SEARCH_PROFESSOR = (
     "SELECT * FROM professorlist WHERE first_name = %s AND last_name = %s"

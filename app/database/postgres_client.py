@@ -40,10 +40,8 @@ class PostgresClient:
         department: str,
         rating: str,
     ) -> None:
-        self.cursor.execute(
-            Queries.ADD_TO_PROFESSORLIST,
-            (legacy_id, first_name, last_name, department, rating),
-        )
+        data = (legacy_id, first_name, last_name, department, rating)
+        self.cursor.execute(Queries.ADD_TO_PROFESSORLIST, data)
         self.conn.commit()
 
     def add_to_watchlist(self, section_id: str, department: str, email: str) -> None:
