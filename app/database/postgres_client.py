@@ -21,10 +21,28 @@ class PostgresClient:
                 port="5432",
             )
             self.cursor = self.conn.cursor()
-            self.cursor.execute(Queries.CREATE_TABLE)
+            self.cursor.execute(Queries.CREATE_TABLE_WATCHLIST)
+            self.conn.commit()
+            self.cursor.execute(Queries.CREATE_TABLE_PROFESSORLIST)
             self.conn.commit()
         except psycopg2.OperationalError as e:
             raise Exception("Unable to connect to Postgres.")
+
+    def search_professor(self, first_name: str, last_name: str) -> list:
+        self.cursor.execute(Queries.SEARCH_PROFESSOR, (first_name, last_name))
+        return self.cursor.fetchone()
+
+    def add_professor(
+        self,
+        first_name: str,
+        last_name: str,
+        legacy_id: str,
+        department: str,
+        rating: str,
+    ) -> None:
+        data = (legacy_id, first_name, last_name, department, rating)
+        self.cursor.execute(Queries.ADD_TO_PROFESSORLIST, data)
+        self.conn.commit()
 
     def add_to_watchlist(self, section_id: str, department: str, email: str) -> None:
         self.cursor.execute(Queries.ADD_TO_WATCHLIST, (section_id, department, email))

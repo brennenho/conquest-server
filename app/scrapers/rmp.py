@@ -67,6 +67,9 @@ class RmpParser:
         Args:
             count (int, optional): The number of professor entries to scrape. Defaults to 10.
 
+        Raises:
+            RuntimeError: unable to scrape the next batch of professors
+
         Returns:
             dict: Formatted json file for professor information. See parse_json() for more information.
         """
@@ -77,8 +80,7 @@ class RmpParser:
         if response.status_code == 200:
             return self.parse_json(response.json())
         else:
-            print("Error scraping")
-        return {}
+            raise RuntimeError("Error parsing first setup of scrapes")
 
     def parse_json(self, json: dict) -> dict:
         """parses graphql responses from ratemyprofessor to give streamline format to store
@@ -96,17 +98,16 @@ class RmpParser:
             prof_rating = node["avgRating"]
             first_name = node["firstName"]
             last_name = node["lastName"]
-            prof_id = node["id"]
             prof_legacyid = node["legacyId"]
             prof_department = node["department"]
             prof_profile = {
                 "department": prof_department,
-                "id": prof_id,
-                "legacyid": prof_legacyid,
-                "rating": prof_rating,
+                "first_name": first_name,
+                "last_name": last_name,
+                "rating": str(prof_rating),
             }
             # Setting the key to which to access the profile of each professor, can change if needed
-            professor_profiles[first_name + last_name] = prof_profile
+            professor_profiles[str(prof_legacyid)] = prof_profile
         # making sure we keep a bookmark to where we last searched
         self.cursor = json["data"]["search"]["teachers"]["pageInfo"]["endCursor"]
         self.parsed_all = not json["data"]["search"]["teachers"]["pageInfo"][
