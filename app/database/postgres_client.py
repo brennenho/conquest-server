@@ -72,6 +72,10 @@ class PostgresClient:
         self.cursor.execute(Queries.SEARCH_WATCHLIST, (section_id, email))
         return self.cursor.fetchone()
 
+    def search_by_email(self, email: str) -> list:
+        self.cursor.execute(Queries.SEARCH_BY_EMAIL, (email,))
+        return self.cursor.fetchall()
+
     def __del__(self) -> None:
         try:
             self.cursor.close()
