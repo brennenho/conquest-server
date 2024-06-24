@@ -31,8 +31,7 @@ def validate_token(token: str = Body(...)):
 @router.post("/get-password")
 async def get_password(email: str = Body(...)):
     manager = AlertManager()
-    password = await manager.generate_password(email)
-    return JSONResponse(content=password, status_code=200)
+    await manager.generate_password(email)
 
 
 @router.post("/validate-password")

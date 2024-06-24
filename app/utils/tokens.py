@@ -36,8 +36,8 @@ def generate_random_pass() -> str:
     Generate a random one-time password.
 
     Returns:
-        str: A 6-character alphanumeric password.
+        str: A 5-character numeric password.
     """
-    characters = string.ascii_uppercase + string.digits
-    password = "".join(random.choice(characters) for _ in range(6))
+    characters = string.digits
+    password = "".join(random.choice(characters) for _ in range(5))
     return password

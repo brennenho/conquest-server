@@ -23,13 +23,13 @@ class AlertManager:
         Generate a random one-time password for a user. Password expires after 10 minutes.
 
         Returns:
-            str: A 6-character alphanumeric password.
+            str: A 5-character numeric password.
         """
-        if email in self._passwords:
-            del self._passwords[email]
+        self.remove_password(email)
         password: str = generate_random_pass()
         self._passwords[email] = password
-        send_password(email, password)
+        # send_password(email, password)
+        logger.info(f"Generated password {password} for {email}")
         # Schedule a task to remove the password after 10 minutes
         asyncio.get_event_loop().call_later(600, self.remove_password, email)
         return password
