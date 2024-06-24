@@ -4,8 +4,15 @@ from jwt.exceptions import InvalidTokenError
 
 from app.utils.tokens import validate_key, encode_token, decode_token
 from app.alerts.manager import AlertManager
+from app.database.postgres_client import PostgresClient
 
 router = APIRouter(prefix="/users", tags=["users"])
+
+
+@router.post("/search-professor")
+def search_professor(first_name: str, last_name: str):
+    client = PostgresClient()
+    return client.search_professor(first_name=first_name, last_name=last_name)
 
 
 @router.post("/generate-token")
