@@ -34,13 +34,10 @@ def delete(section_id: str = Body(...), email: str = Body(...)) -> JSONResponse:
 
 
 @router.post("/search")
-def search(section_id: str = Body(...), email: str = Body(...)) -> JSONResponse:
-    logger.info(f"Searching for {section_id} in {email}'s watchlist.")
+def search(email: str = Body(...)) -> JSONResponse:
     try:
-        response = PostgresClient().search_watchlist(section_id=section_id, email=email)
-        if response:
-            return JSONResponse(content=True, status_code=200)
-        return JSONResponse(content=False, status_code=200)
+        response = PostgresClient().search_by_email(email=email)
+        return JSONResponse(content=response, status_code=200)
     except Exception as e:
         logger.error(f"Error searching watchlist: {e}")
         return JSONResponse(content=False, status_code=500)

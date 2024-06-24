@@ -41,6 +41,8 @@ SEARCH_BY_SECTION = "SELECT * FROM watchlist WHERE section_id = %s;"
 
 SEARCH_WATCHLIST = "SELECT * FROM watchlist WHERE section_id = %s AND email = %s;"
 
+SEARCH_BY_EMAIL = "SELECT * FROM watchlist WHERE email = %s;"
+
 DELETE_EMAIL_FROM_WATCHLIST = """
                 DELETE FROM watchlist
                 WHERE section_id = %s AND email = %s;
