@@ -32,7 +32,8 @@ class PostgresClient:
         self, first_name: str, last_name: str, department: str
     ) -> list:
         self.cursor.execute(
-            Queries.SEARCH_PROFESSOR, (first_name, last_name, department.lower(), department.lower())
+            Queries.SEARCH_PROFESSOR,
+            (first_name, last_name, department.lower(), department.lower()),
         )
         return self.cursor.fetchone()
 
