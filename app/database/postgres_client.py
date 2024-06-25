@@ -28,8 +28,12 @@ class PostgresClient:
         except psycopg2.OperationalError as e:
             raise Exception("Unable to connect to Postgres.")
 
-    def search_professor(self, first_name: str, last_name: str) -> list:
-        self.cursor.execute(Queries.SEARCH_PROFESSOR, (first_name, last_name))
+    def search_professor(
+        self, first_name: str, last_name: str, department: str
+    ) -> list:
+        self.cursor.execute(
+            Queries.SEARCH_PROFESSOR, (first_name, last_name, department.lower(), department.lower())
+        )
         return self.cursor.fetchone()
 
     def add_professor(

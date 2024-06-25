@@ -10,9 +10,16 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.post("/search-professor")
-def search_professor(first_name: str, last_name: str):
+def search_professor(
+    first_name: str = Body(...), last_name: str = Body(...), department: str = Body(...)
+):
     client = PostgresClient()
-    return client.search_professor(first_name=first_name, last_name=last_name)
+    result = client.search_professor(
+        first_name=first_name, last_name=last_name, department=department
+    )
+    if result == None:
+        return JSONResponse(content={"valid": False}, status_code=401)
+    return JSONResponse(content={"valid": True, "result": result}, status_code=200)
 
 
 @router.post("/generate-token")
