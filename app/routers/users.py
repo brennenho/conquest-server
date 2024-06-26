@@ -4,6 +4,7 @@ from jwt.exceptions import InvalidTokenError
 
 from app.utils.tokens import validate_key, encode_token, decode_token
 from app.alerts.manager import AlertManager
+from app.database.postgres_client import PostgresClient
 
 router = APIRouter(prefix="/users", tags=["users"])
 
