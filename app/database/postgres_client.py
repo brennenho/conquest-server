@@ -25,6 +25,8 @@ class PostgresClient:
             self.conn.commit()
             self.cursor.execute(Queries.CREATE_TABLE_PROFESSORLIST)
             self.conn.commit()
+            # self.cursor.execute(Queries.CREATE_TABLE_COURSES)
+            # self.conn.commit()
         except psycopg2.OperationalError as e:
             raise Exception("Unable to connect to Postgres.")
 

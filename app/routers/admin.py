@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 
 from app.dependencies import get_auth_header
 from app.scrapers.rmp import RmpParser
+from app.api.courses import CourseClient
 from app.database.postgres_client import PostgresClient
 
 router = APIRouter(
@@ -27,3 +28,10 @@ def scrape_rmp():
         return JSONResponse(content="success", status_code=200)
     except RuntimeError:
         return JSONResponse(content=False, status_code=500)
+
+
+@router.post("/scrape-courses")
+def scrape_courses():
+    client = CourseClient()
+    return (client.get_department("CSCI"))
+    return JSONResponse(content="succses", status_code=200)

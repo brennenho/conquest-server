@@ -18,6 +18,20 @@ CREATE_TABLE_PROFESSORLIST = """
                     );
                     """
 
+CREATE_TABLE_COURSES = """
+                CREATE TABLE IF NOT EXISTS courselist (
+                    section_id VARCHAR(8) PRIMARY KEY,
+                    department_prefix VARCHAR(5) NOT NULL,
+                    course_number VARCHAR(5) NOT NULL
+                    first_name VARCHAR(25) NOT NULL,
+                    last_name VARCHAR(25) NOT NULL,
+                    start_time VARCHAR(8) NOT NULL,
+                    end_time VARCHAR(8) NOT NULL,
+                    days VARCHAR(5) NOT NULL,
+                    class_type VARCHAR(8) NOT NULL
+                    );
+                    """
+
 ADD_TO_PROFESSORLIST = """
             INSERT INTO professorlist (legacy_id, first_name, last_name, department, rating)
             VALUES (%s, %s, %s, %s, %s);
