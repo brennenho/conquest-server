@@ -33,5 +33,5 @@ def scrape_rmp():
 @router.post("/scrape-courses")
 def scrape_courses():
     client = CourseClient()
-    return (client.get_all_departments())
+    return client.get_all_departments()
     return JSONResponse(content="succses", status_code=200)

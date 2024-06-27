@@ -58,12 +58,16 @@ class CourseClient:
             foundSectionDetail = {
                 "class_type": section["type"],
                 "instructor": [],
-                "section_id": section["id"]
+                "section_id": section["id"],
             }
             foundSectionDetail["instructor"].append(self.get_instructor_name(section))
             foundSectionDetail.update(self.get_start_end_time(section))
             foundSectionDetail.update(self.get_section_days(section))
-            foundSectionDetail.update({"class_name": f"{course["CourseData"]['prefix']}{course["CourseData"]['number']}"})
+            foundSectionDetail.update(
+                {
+                    "class_name": f"{course["CourseData"]['prefix']}{course["CourseData"]['number']}"
+                }
+            )
             # individual section for each class
             foundSection.append(foundSectionDetail)
         return foundSection
@@ -74,12 +78,16 @@ class CourseClient:
         foundSectionDetail = {
             "section_id": section["id"],
             "class_type": section["type"],
-            "instructor": []
+            "instructor": [],
         }
         foundSectionDetail["instructor"].append(self.get_instructor_name(section))
         foundSectionDetail.update(self.get_start_end_time(section))
         foundSectionDetail.update(self.get_section_days(section))
-        foundSectionDetail.update({"class_name": f"{course["CourseData"]['prefix']}{course["CourseData"]['number']}"})
+        foundSectionDetail.update(
+            {
+                "class_name": f"{course["CourseData"]['prefix']}{course["CourseData"]['number']}"
+            }
+        )
         # individual section for each class
         foundSection.append(foundSectionDetail)
         return foundSection
