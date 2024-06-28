@@ -2,7 +2,7 @@ from fastapi import APIRouter, Body
 from fastapi.responses import JSONResponse
 from app.database.postgres_client import PostgresClient
 
-router = APIRouter(prefix="/professors", tags=["professors"])
+router = APIRouter(prefix="/search", tags=["search"])
 
 
 @router.post("/search-professor")
