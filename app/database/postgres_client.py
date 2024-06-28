@@ -41,18 +41,6 @@ class PostgresClient:
         days: str,
         class_type: str,
     ) -> None:
-        """_summary_
-
-        Args:
-            section_id (str): _description_
-            course (str): _description_
-            first_name (str): _description_
-            last_name (str): _description_
-            start_time (str): _description_
-            end_time (str): _description_
-            days (str): _description_
-            class_type (str): _description_
-        """
         self.cursor.execute(
             Queries.ADD_TO_COURSELIST,
             (
@@ -67,6 +55,10 @@ class PostgresClient:
             ),
         )
         self.conn.commit()
+
+    def search_course(self, course: str):
+        self.cursor.execute(Queries.SEARCH_COURSE, (course,))
+        return self.cursor.fetchall()
 
     def search_professor_name(self, first_name: str, last_name: str) -> list:
         self.cursor.execute(

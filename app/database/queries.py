@@ -37,7 +37,7 @@ ADD_TO_COURSELIST = """
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 ON CONFLICT (section_id) DO NOTHING;
                 """
-                
+SEARCH_COURSE = "SELECT * FROM courselist WHERE LOWER(course) = LOWER(%s);"
 ADD_TO_PROFESSORLIST = """
                     INSERT INTO professorlist (legacy_id, first_name, last_name, department, rating)
                     VALUES (%s, %s, %s, %s, %s);

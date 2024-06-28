@@ -23,7 +23,7 @@ def scrape_rmp():
                 values["last_name"],
                 id,
                 values["department"],
-                values["rating"]
+                values["rating"],
             )
         return JSONResponse(content="success", status_code=200)
     except RuntimeError:
@@ -37,19 +37,18 @@ def scrape_courses():
         client = PostgresClient()
         response = parser.get_all_departments()
         for department in response:
-            for course in department:
-                course = course[0]
-                client.add_to_courses(
-                    course["section_id"],
-                    course["class_name"],
-                    course["instructor"][0]["first_name"],
-                    course["instructor"][0]["last_name"],
-                    course["start_time"],
-                    course["end_time"],
-                    course["days"],
-                    course["class_type"]
-                )
+            for courses in department:
+                for course in courses:
+                    client.add_to_courses(
+                        course["section_id"],
+                        course["class_name"],
+                        course["instructor"][0]["first_name"],
+                        course["instructor"][0]["last_name"],
+                        course["start_time"],
+                        course["end_time"],
+                        course["days"],
+                        course["class_type"],
+                    )
         return JSONResponse(content="succses", status_code=200)
-    except Exception as e:
-        print(e)
-        return  JSONResponse(content=False, status_code=500)
+    except Exception:
+        return JSONResponse(content=False, status_code=500)
