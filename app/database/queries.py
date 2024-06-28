@@ -14,7 +14,8 @@ CREATE_TABLE_PROFESSORLIST = """
                     first_name VARCHAR(25) NOT NULL,
                     last_name VARCHAR(25) NOT NULL,
                     department VARCHAR(50) NOT NULL,
-                    rating VARCHAR(3) NOT NULL
+                    rating VARCHAR(3) NOT NULL,
+                    UNIQUE (legacy_id)
                     );
                     """
 
@@ -40,7 +41,8 @@ ADD_TO_COURSELIST = """
 SEARCH_COURSE = "SELECT * FROM courselist WHERE LOWER(course) = LOWER(%s);"
 ADD_TO_PROFESSORLIST = """
                     INSERT INTO professorlist (legacy_id, first_name, last_name, department, rating)
-                    VALUES (%s, %s, %s, %s, %s);
+                    VALUES (%s, %s, %s, %s, %s)
+                    ON CONFLICT (legacy_id) DO NOTHING;
                     """
 SEARCH_PROFESSOR_DEPARTMENT = "SELECT * FROM professorlist WHERE first_name ~ %s AND last_name ~ %s AND (LOWER(department) ~ %s OR %s ~ LOWER(department));"
 SEARCH_PROFESSOR_NAME = (

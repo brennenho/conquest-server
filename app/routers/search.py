@@ -29,5 +29,5 @@ def search_course(course: str = Body(..., embed=True)):
     client = PostgresClient()
     result = client.search_course(course)
     if len(result) == 0:
-        return JSONResponse(content={"valid": False}, status_code=401)
-    return JSONResponse(content={"valid": True, "result": result}, status_code=200)
+        return [None]
+    return result

@@ -4,7 +4,7 @@ from fastapi import FastAPI, Depends, Body
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from app.routers import search, users, watchlist, admin
+from app.routers import search, users, watchlist, admin, recommend
 from app.alerts.scheduler import continuous_check
 from app.utils.logger import get_logger
 from app.utils.constants import ALLOWED_ORIGINS
@@ -37,3 +37,4 @@ app.include_router(admin.router)
 app.include_router(users.router)
 app.include_router(watchlist.router)
 app.include_router(search.router)
+app.include_router(recommend.router)
