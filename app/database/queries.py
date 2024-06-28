@@ -20,23 +20,28 @@ CREATE_TABLE_PROFESSORLIST = """
 
 CREATE_TABLE_COURSES = """
                 CREATE TABLE IF NOT EXISTS courselist (
-                    section_id VARCHAR(8) PRIMARY KEY,
-                    department_prefix VARCHAR(5) NOT NULL,
-                    course_number VARCHAR(5) NOT NULL
+                    id SERIAL PRIMARY KEY,
+                    section_id VARCHAR(8) NOT NULL,
+                    course VARCHAR(8) NOT NULL,
                     first_name VARCHAR(25) NOT NULL,
                     last_name VARCHAR(25) NOT NULL,
-                    start_time VARCHAR(8) NOT NULL,
-                    end_time VARCHAR(8) NOT NULL,
-                    days VARCHAR(5) NOT NULL,
-                    class_type VARCHAR(8) NOT NULL
+                    start_time VARCHAR(30) NOT NULL,
+                    end_time VARCHAR(30) NOT NULL,
+                    days VARCHAR(15) NOT NULL,
+                    class_type VARCHAR(8) NOT NULL,
+                    UNIQUE (section_id)
                     );
                     """
-
+ADD_TO_COURSELIST = """
+                INSERT INTO courselist (section_id, course, first_name, last_name, start_time, end_time, days, class_type)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (section_id) DO NOTHING;
+                """
+                
 ADD_TO_PROFESSORLIST = """
-            INSERT INTO professorlist (legacy_id, first_name, last_name, department, rating)
-            VALUES (%s, %s, %s, %s, %s);
-        """
-
+                    INSERT INTO professorlist (legacy_id, first_name, last_name, department, rating)
+                    VALUES (%s, %s, %s, %s, %s);
+                    """
 SEARCH_PROFESSOR_DEPARTMENT = "SELECT * FROM professorlist WHERE first_name ~ %s AND last_name ~ %s AND (LOWER(department) ~ %s OR %s ~ LOWER(department));"
 SEARCH_PROFESSOR_NAME = (
     "SELECT * FROM professorlist WHERE first_name ~ %s AND last_name ~ %s;"

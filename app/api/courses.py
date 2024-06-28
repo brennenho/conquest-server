@@ -34,6 +34,14 @@ class CourseClient:
 
     def get_start_end_time(self, json):
         try:
+            if (isinstance(json['start_time'], list)):
+                for i in range(len(json['start_time'])):
+                    if not isinstance(json['start_time'][i], str):
+                        json['start_time'][i] = "TBA"
+            if (isinstance(json['end_time'], list)):
+                for i in range(len(json['end_time'])):
+                    if not isinstance(json['end_time'][i], str):
+                        json['end_time'][i] = "TBA"
             return {
                 "start_time": json["start_time"],
                 "end_time": json["end_time"],
@@ -46,10 +54,16 @@ class CourseClient:
 
     def get_section_days(self, json):
         try:
+            if (json['day'] == {}):
+                json['day'] = 'TBA'
+            if (isinstance(json['day'], list)):
+                for i in range(len(json['day'])):
+                    if not isinstance(json['day'][i], str):
+                        json['day'][i] = "TBA"
             return {
                 "days": json["day"],
             }
-        except KeyError:
+        except:
             return {"days": "TBA"}
 
     def parse_course_data_list(self, json, course):

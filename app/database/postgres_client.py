@@ -25,10 +25,48 @@ class PostgresClient:
             self.conn.commit()
             self.cursor.execute(Queries.CREATE_TABLE_PROFESSORLIST)
             self.conn.commit()
-            # self.cursor.execute(Queries.CREATE_TABLE_COURSES)
-            # self.conn.commit()
+            self.cursor.execute(Queries.CREATE_TABLE_COURSES)
+            self.conn.commit()
         except psycopg2.OperationalError as e:
             raise Exception("Unable to connect to Postgres.")
+
+    def add_to_courses(
+        self,
+        section_id: str,
+        course: str,
+        first_name: str,
+        last_name: str,
+        start_time: str,
+        end_time: str,
+        days: str,
+        class_type: str,
+    ) -> None:
+        """_summary_
+
+        Args:
+            section_id (str): _description_
+            course (str): _description_
+            first_name (str): _description_
+            last_name (str): _description_
+            start_time (str): _description_
+            end_time (str): _description_
+            days (str): _description_
+            class_type (str): _description_
+        """
+        self.cursor.execute(
+            Queries.ADD_TO_COURSELIST,
+            (
+                section_id,
+                course,
+                first_name,
+                last_name,
+                start_time,
+                end_time,
+                days,
+                class_type,
+            ),
+        )
+        self.conn.commit()
 
     def search_professor_name(self, first_name: str, last_name: str) -> list:
         self.cursor.execute(
