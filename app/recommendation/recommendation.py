@@ -6,15 +6,17 @@ class Recommendations:
         def search_course(course):
             def extract_time(list):
                 try:
-                    return (int(list[5].replace(":", "")))
+                    return int(list[5].replace(":", ""))
                 except Exception:
                     return 0
+
             client = PostgresClient()
             result = client.search_course(course)
             if len(result) == 0:
                 return [None]
             result.sort(key=extract_time)
             return result
+
         result = []
         for course in courses:
             result.append(search_course(course))
