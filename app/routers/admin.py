@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 from app.dependencies import get_auth_header
@@ -39,16 +39,22 @@ def scrape_courses():
         for department in response:
             for courses in department:
                 for course in courses:
+                    first_names = []
+                    last_names = []
+                    for instructor in course["instructor"]:
+                        first_names.append(instructor['first_name'])
+                        last_names.append(instructor['last_name'])
                     client.add_to_courses(
                         course["section_id"],
                         course["class_name"],
-                        course["instructor"][0]["first_name"],
-                        course["instructor"][0]["last_name"],
+                        first_names,
+                        last_names,
                         course["start_time"],
                         course["end_time"],
                         course["days"],
                         course["class_type"],
                     )
         return JSONResponse(content="succses", status_code=200)
-    except Exception:
-        return JSONResponse(content=False, status_code=500)
+    except Exception as e:
+        print(e)
+        return response
