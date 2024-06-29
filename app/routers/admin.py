@@ -57,4 +57,4 @@ def scrape_courses():
         return JSONResponse(content="succses", status_code=200)
     except Exception as e:
         print(e)
-        return response
+        return JSONResponse(content=False, status_code=500)
