@@ -41,3 +41,31 @@ def search(email: str = Body(...)) -> JSONResponse:
     except Exception as e:
         logger.error(f"Error searching watchlist: {e}")
         return JSONResponse(content=False, status_code=500)
+
+
+@router.post("/search-with-details")
+def get_all(email: str = Body(...)) -> JSONResponse:
+    try:
+        response = PostgresClient().search_by_email(email=email)
+        sections = {}
+        for section in response:
+            section_info = PostgresClient().search_course_by_id(section[1])
+            sections[section[1]] = {
+                "name": section_info[2],
+                "professors": " ".join(
+                    [
+                        section_info[3][1:-1].split(",")[i].replace('"', "")
+                        + " "
+                        + section_info[4][1:-1].split(",")[i].replace('"', "")
+                        for i in range(len(section_info[3][1:-1].split(",")))
+                    ]
+                ),
+                "start_time": section_info[5],
+                "end_time": section_info[6],
+                "days": section_info[7],
+                "class_type": section_info[8],
+            }
+        return JSONResponse(content=sections, status_code=200)
+    except Exception as e:
+        logger.error(f"Error getting all watchlist: {e}")
+        return JSONResponse(content=False, status_code=500)

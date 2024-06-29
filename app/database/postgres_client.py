@@ -60,6 +60,10 @@ class PostgresClient:
         self.cursor.execute(Queries.SEARCH_COURSE, (course,))
         return self.cursor.fetchall()
 
+    def search_course_by_id(self, section_id: str):
+        self.cursor.execute(Queries.SEARCH_COURSE_BY_ID, (section_id,))
+        return self.cursor.fetchone()
+
     def search_professor_name(self, first_name: str, last_name: str) -> list:
         self.cursor.execute(
             Queries.SEARCH_PROFESSOR_NAME,
