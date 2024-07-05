@@ -1,5 +1,7 @@
 from app.database.postgres_client import PostgresClient
 import itertools
+
+
 class CourseSearcher:
 
     def get_recommendations(self, selected_courses: list):
@@ -22,11 +24,12 @@ class CourseSearcher:
                     else:
                         time_conflict = True
                         break
-                if (time_conflict):
+                if time_conflict:
                     break
             if not time_conflict:
                 schedules.append(potential_schedule)
         return schedules
+
     def section_combination(self, combo: list):
         if len(combo) == 0:
             return {}
@@ -35,11 +38,11 @@ class CourseSearcher:
         for section in combo:
             if not classes.get(section[2]):
                 classes[section[2]] = {}
-                required_types = (self.get_required_course_types(section[2]).values())
+                required_types = self.get_required_course_types(section[2]).values()
                 course = classes.get(section[2])
                 for _ in required_types:
                     for types in _:
-                        course.update({types:set()})
+                        course.update({types: set()})
             classes.get(section[2]).get(section[8]).add(section)
         courses = {}
         for key, value in classes.items():
@@ -49,6 +52,7 @@ class CourseSearcher:
         class_lists = [courses[key] for key in courses]
         combinations = list(itertools.product(*class_lists))
         return combinations
+
     def all_combonations(self, courses: list):
         if len(courses) == 0:
             return []
@@ -60,7 +64,7 @@ class CourseSearcher:
             combinations = [list(itertools.chain(*combo)) for combo in combinations]
         combinations = [combo for combo in combinations]
         return combinations
-        
+
     def search_courses(self, selected: list):
         courses = []
         for course in selected:
@@ -77,9 +81,13 @@ class CourseSearcher:
         for section in result:
             if len(combo) == 0:
                 combo.append(section)
-            elif "Lec" in section[8] and len(set([section[8] for section in combo])) == 1:
+            elif (
+                "Lec" in section[8] and len(set([section[8] for section in combo])) == 1
+            ):
                 combo.append(section)
-            elif "Lec" in section[8] and len(set([section[8] for section in combo])) != 1:
+            elif (
+                "Lec" in section[8] and len(set([section[8] for section in combo])) != 1
+            ):
                 possible_combonations.append(combo)
                 combo = []
                 combo.append(section)
