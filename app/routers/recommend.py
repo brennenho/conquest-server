@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Body
 from fastapi.responses import JSONResponse
-from app.recommendation.recommendation import Recommendations, CourseSearcher
+from app.recommendation.recommendation import CourseSearcher
 
 router = APIRouter(prefix="/recommend", tags=["recommend"])
 
