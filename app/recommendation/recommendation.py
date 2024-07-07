@@ -12,7 +12,7 @@ class CourseSearcher:
         combinations
         for combo in combinations:
             timeClient = TimeClient()
-            potential_schedule = []
+            potential_schedule: list = []
             time_conflict = False
             for course in combo:
                 for section in course:
@@ -34,16 +34,22 @@ class CourseSearcher:
         if len(combo) == 0:
             return {}
         combo = combo[0]
-        classes = dict()
+        classes: dict[str, dict[str, set[str]]] = {}
         for section in combo:
-            if not classes.get(section[2]):
+            class_name: dict[str, set[str]] | None = classes.get(section[2])
+            if not class_name:
                 classes[section[2]] = {}
                 required_types = self.get_required_course_types(section[2]).values()
-                course = classes.get(section[2])
+                course: dict[str, set[str]] | None = class_name
+                if not course:
+                    continue
                 for _ in required_types:
                     for types in _:
                         course.update({types: set()})
-            classes.get(section[2]).get(section[8]).add(section)
+            if class_name:
+                section_list = class_name.get(section[8])
+                if section_list:
+                    section_list.add(section)
         courses = {}
         for key, value in classes.items():
             values = value.values()
@@ -76,8 +82,8 @@ class CourseSearcher:
         result = client.search_course(course)
         if len(result) == 0:
             return [None]
-        possible_combonations = []
-        combo = []
+        possible_combonations: list = []
+        combo: list = []
         for section in result:
             if len(combo) == 0:
                 combo.append(section)
@@ -131,7 +137,7 @@ class TimeClient:
         return not ((max2 - min1) * (min2 - max1) >= 0)
 
     def daysToBitmask(self, days: str):
-        daysMap: dict = {
+        daysMap: dict[str, int] = {
             "M": 1 << 0,
             "T": 1 << 1,
             "W": 1 << 2,
@@ -140,7 +146,10 @@ class TimeClient:
         }
         bitmask = 0
         for i in days:
-            bitmask |= daysMap.get(i)
+            bit: int | None = daysMap.get(i)
+            if not bit:
+                return
+            bitmask |= bit
         return bitmask
 
     def overlaps(self, booked_sections: list, new_section: list) -> bool:
@@ -149,7 +158,7 @@ class TimeClient:
             newStartTime = new_section[5]
             newEndTime = new_section[6]
             if not days or not newStartTime or not newEndTime:
-                return None
+                return True
             newDaysBitmask = self.daysToBitmask(days)
             if len(booked_sections) == 0:
                 return False
