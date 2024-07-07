@@ -7,7 +7,6 @@ class CourseSearcher:
         combinations = self.all_combonations(courses)
         combinations = self.section_combination(combinations)
         schedules = []
-        combinations
         for combo in combinations:
             timeClient = TimeClient()
             potential_schedule = []
@@ -30,24 +29,27 @@ class CourseSearcher:
     def section_combination(self, combo: list):
         if len(combo) == 0:
             return {}
-        combo = combo[0]
-        classes = dict()
-        for section in combo:
-            if not classes.get(section[2]):
-                classes[section[2]] = {}
-                required_types = (self.get_required_course_types(section[2]).values())
-                course = classes.get(section[2])
-                for _ in required_types:
-                    for types in _:
-                        course.update({types:set()})
-            classes.get(section[2]).get(section[8]).add(section)
-        courses = {}
-        for key, value in classes.items():
-            values = value.values()
-            combo = list(itertools.product(*values))
-            courses.update({key: combo})
-        class_lists = [courses[key] for key in courses]
-        combinations = list(itertools.product(*class_lists))
+        combinations = []
+        for combos in combo:
+            classes = dict()
+            for section in combos:
+                if not classes.get(section[2]):
+                    classes[section[2]] = {}
+                    required_types = (self.get_required_course_types(section[2]).values())
+                    course = classes.get(section[2])
+                    for _ in required_types:
+                        for types in _:
+                            course.update({types:set()})
+                classes.get(section[2]).get(section[8]).add(section)
+            courses = {}
+            for key, value in classes.items():
+                values = value.values()
+                combo = list(itertools.product(*values))
+                courses.update({key: combo})
+            class_lists = [courses[key] for key in courses]
+            combination = list(itertools.product(*class_lists))
+            for combo in combination:
+                combinations.append(combo)
         return combinations
     def all_combonations(self, courses: list):
         if len(courses) == 0:
