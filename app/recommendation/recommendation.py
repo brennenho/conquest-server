@@ -34,23 +34,28 @@ class CourseSearcher:
             return {}
         combinations = []
         for combos in combo:
-            classes = dict()
+            classes: dict[str, dict[str, set]] = {}
             for section in combos:
                 if not classes.get(section[2]):
                     classes[section[2]] = {}
-                    required_types = (self.get_required_course_types(section[2]).values())
+                    required_types = self.get_required_course_types(section[2]).values()
                     course = classes.get(section[2])
-                    for _ in required_types:
-                        for types in _:
-                            course.update({types:set()})
-                classes.get(section[2]).get(section[8]).add(section)
+                    if course == {}:
+                        for _ in required_types:
+                            for types in _:
+                                course.update({types: set()})
+                course_name = classes.get(section[2])
+                if isinstance(course_name, dict):
+                    course_name_type = course_name.get(section[8])
+                    if isinstance(course_name_type, set):
+                        course_name_type.add(section)
             courses = {}
             for key, value in classes.items():
                 values = value.values()
                 combo = list(itertools.product(*values))
                 courses.update({key: combo})
             class_lists = [courses[key] for key in courses]
-            combination = list(itertools.product(*class_lists))
+            combination: list = list(itertools.product(*class_lists))
             for combo in combination:
                 combinations.append(combo)
         return combinations
