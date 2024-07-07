@@ -1,5 +1,7 @@
 from app.database.postgres_client import PostgresClient
 import itertools
+
+
 class CourseSearcher:
 
     def get_recommendations(self, selected_courses: list):
@@ -9,7 +11,7 @@ class CourseSearcher:
         schedules = []
         for combo in combinations:
             timeClient = TimeClient()
-            potential_schedule = []
+            potential_schedule: list = []
             time_conflict = False
             for course in combo:
                 for section in course:
@@ -21,11 +23,12 @@ class CourseSearcher:
                     else:
                         time_conflict = True
                         break
-                if (time_conflict):
+                if time_conflict:
                     break
             if not time_conflict:
                 schedules.append(potential_schedule)
         return schedules
+
     def section_combination(self, combo: list):
         if len(combo) == 0:
             return {}
@@ -51,6 +54,7 @@ class CourseSearcher:
             for combo in combination:
                 combinations.append(combo)
         return combinations
+
     def all_combonations(self, courses: list):
         if len(courses) == 0:
             return []
@@ -62,7 +66,7 @@ class CourseSearcher:
             combinations = [list(itertools.chain(*combo)) for combo in combinations]
         combinations = [combo for combo in combinations]
         return combinations
-        
+
     def search_courses(self, selected: list):
         courses = []
         for course in selected:
@@ -74,14 +78,18 @@ class CourseSearcher:
         result = client.search_course(course)
         if len(result) == 0:
             return [None]
-        possible_combonations = []
-        combo = []
+        possible_combonations: list = []
+        combo: list = []
         for section in result:
             if len(combo) == 0:
                 combo.append(section)
-            elif "Lec" in section[8] and len(set([section[8] for section in combo])) == 1:
+            elif (
+                "Lec" in section[8] and len(set([section[8] for section in combo])) == 1
+            ):
                 combo.append(section)
-            elif "Lec" in section[8] and len(set([section[8] for section in combo])) != 1:
+            elif (
+                "Lec" in section[8] and len(set([section[8] for section in combo])) != 1
+            ):
                 possible_combonations.append(combo)
                 combo = []
                 combo.append(section)
@@ -125,7 +133,7 @@ class TimeClient:
         return not ((max2 - min1) * (min2 - max1) >= 0)
 
     def daysToBitmask(self, days: str):
-        daysMap: dict = {
+        daysMap: dict[str, int] = {
             "M": 1 << 0,
             "T": 1 << 1,
             "W": 1 << 2,
@@ -134,7 +142,10 @@ class TimeClient:
         }
         bitmask = 0
         for i in days:
-            bitmask |= daysMap.get(i)
+            bit: int | None = daysMap.get(i)
+            if not bit:
+                return
+            bitmask |= bit
         return bitmask
 
     def overlaps(self, booked_sections: list, new_section: list) -> bool:
@@ -143,7 +154,7 @@ class TimeClient:
             newStartTime = new_section[5]
             newEndTime = new_section[6]
             if not days or not newStartTime or not newEndTime:
-                return None
+                return True
             newDaysBitmask = self.daysToBitmask(days)
             if len(booked_sections) == 0:
                 return False
