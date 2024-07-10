@@ -79,7 +79,7 @@ class CourseClient:
             foundSectionDetail.update(self.get_section_days(section))
             foundSectionDetail.update(
                 {
-                    "class_name": f"{course["CourseData"]['prefix']}{course["CourseData"]['number']}"
+                    "class_name": f"{course["CourseData"]['prefix']}-{course["CourseData"]['number']}"
                 }
             )
             # individual section for each class
