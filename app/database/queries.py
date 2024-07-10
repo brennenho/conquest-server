@@ -22,7 +22,7 @@ CREATE_TABLE_PROFESSORLIST = """
 CREATE_TABLE_COURSES = """
                 CREATE TABLE IF NOT EXISTS courselist (
                     id SERIAL PRIMARY KEY,
-                    section_id VARCHAR(8) NOT NULL,
+                    section_id VARCHAR(10) NOT NULL,
                     course VARCHAR(8) NOT NULL,
                     first_name VARCHAR(60) NOT NULL,
                     last_name VARCHAR(60) NOT NULL,
