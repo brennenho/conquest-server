@@ -1,5 +1,4 @@
 import os
-import json
 import psycopg2
 
 from app.utils.logger import get_logger

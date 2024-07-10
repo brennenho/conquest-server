@@ -37,3 +37,8 @@ app.include_router(admin.router)
 app.include_router(users.router)
 app.include_router(watchlist.router)
 app.include_router(search.router)
+
+
+@app.get("/")
+async def root():
+    return {"status": "ok"}
