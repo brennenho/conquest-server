@@ -42,8 +42,8 @@ def scrape_courses():
                     first_names = []
                     last_names = []
                     for instructor in course["instructor"]:
-                        first_names.append(instructor['first_name'])
-                        last_names.append(instructor['last_name'])
+                        first_names.append(instructor["first_name"])
+                        last_names.append(instructor["last_name"])
                     client.add_to_courses(
                         course["section_id"],
                         course["class_name"],
