@@ -14,15 +14,37 @@ CREATE_TABLE_PROFESSORLIST = """
                     first_name VARCHAR(25) NOT NULL,
                     last_name VARCHAR(25) NOT NULL,
                     department VARCHAR(50) NOT NULL,
-                    rating VARCHAR(3) NOT NULL
+                    rating VARCHAR(3) NOT NULL,
+                    UNIQUE (legacy_id)
                     );
                     """
 
+CREATE_TABLE_COURSES = """
+                CREATE TABLE IF NOT EXISTS courselist (
+                    id SERIAL PRIMARY KEY,
+                    section_id VARCHAR(10) NOT NULL,
+                    course VARCHAR(8) NOT NULL,
+                    first_name VARCHAR(60) NOT NULL,
+                    last_name VARCHAR(60) NOT NULL,
+                    start_time VARCHAR(30) NOT NULL,
+                    end_time VARCHAR(30) NOT NULL,
+                    days VARCHAR(15) NOT NULL,
+                    class_type VARCHAR(8) NOT NULL,
+                    UNIQUE (section_id)
+                    );
+                    """
+ADD_TO_COURSELIST = """
+                INSERT INTO courselist (section_id, course, first_name, last_name, start_time, end_time, days, class_type)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                ON CONFLICT (section_id) DO NOTHING;
+                """
+SEARCH_COURSE = "SELECT * FROM courselist WHERE LOWER(course) = LOWER(%s);"
+SEARCH_COURSE_BY_ID = "SELECT * FROM courselist WHERE section_id = %s;"
 ADD_TO_PROFESSORLIST = """
-            INSERT INTO professorlist (legacy_id, first_name, last_name, department, rating)
-            VALUES (%s, %s, %s, %s, %s);
-        """
-
+                    INSERT INTO professorlist (legacy_id, first_name, last_name, department, rating)
+                    VALUES (%s, %s, %s, %s, %s)
+                    ON CONFLICT (legacy_id) DO NOTHING;
+                    """
 SEARCH_PROFESSOR_DEPARTMENT = "SELECT * FROM professorlist WHERE first_name ~ %s AND last_name ~ %s AND (LOWER(department) ~ %s OR %s ~ LOWER(department));"
 SEARCH_PROFESSOR_NAME = (
     "SELECT * FROM professorlist WHERE first_name ~ %s AND last_name ~ %s;"
