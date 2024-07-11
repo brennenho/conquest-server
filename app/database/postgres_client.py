@@ -7,10 +7,11 @@ import app.database.queries as Queries
 logger = get_logger(__name__)
 
 
+# Wrapper class to manage all Postgres interactions
 class PostgresClient:
 
     def __init__(self):
-        # attempt to establish connection to Postgres
+        # Attempt to establish connection to Postgres
         try:
             self.conn = psycopg2.connect(
                 host=os.environ.get("POSTGRES_HOST"),
@@ -20,14 +21,15 @@ class PostgresClient:
                 port="5432",
             )
             self.cursor = self.conn.cursor()
+
+            # Create all needed tables if they don't exist
             self.cursor.execute(Queries.CREATE_TABLE_WATCHLIST)
-            self.conn.commit()
             self.cursor.execute(Queries.CREATE_TABLE_PROFESSORLIST)
-            self.conn.commit()
             self.cursor.execute(Queries.CREATE_TABLE_COURSES)
             self.conn.commit()
+
         except psycopg2.OperationalError as e:
-            raise Exception("Unable to connect to Postgres.")
+            raise Exception("Cannot connect to Postgres. Is Docker running?")
 
     def add_to_courses(
         self,
@@ -124,10 +126,11 @@ class PostgresClient:
         return self.cursor.fetchall()
 
     def __del__(self) -> None:
+        # Automatically close the connection when the object is deleted
         try:
             self.cursor.close()
             self.conn.close()
         except AttributeError:
             logger.warning(
-                "PostgresClient attempted to close a non-existent connection."
+                "PostgresClient attempted to close a non-existent connection"
             )

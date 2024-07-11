@@ -5,14 +5,30 @@
 A python Fast API to serve [Conquest](https://github.com/brennenho/conquest), a chrome extension for USC students.
 
 
-## Installing Server for local development
+## Install development requirements
 1. Install [pyenv](https://github.com/pyenv/pyenv) to manage python versions
-2. Copy `.env` values from [`.env.sample`](.env.sample)
-3. `python3 -m venv venv`: create a virtual env
-4. `source venv/bin/activate`: activate virtual env
-5. `pip install -r requirements.txt`: install server dependencies
-6. `pip install -r requirements-dev.txt`: install developer tools (optional)
+2. Install [Docker compose](https://docs.docker.com/compose/install/)
+3. Copy `.env` values from [`.env.sample`](.env.sample)
+4. `python3 -m venv venv`: create a virtual env
+5. `source venv/bin/activate`: activate virtual env
+6. `pip install -r requirements.txt`: install server dependencies
+7. `pip install -r requirements-dev.txt`: install developer tools (optional)
 
-## Running Server
-- Development: `make dev` (port 3002)
-- Production: `make prod` (port 8000)
+### Run local development server
+- `make db`: start postgres database with Docker
+- `make local`: start local Uvicorn server on port `3002`
+
+### Run Dockerized development server
+- Set env variable `TARGET=development`
+- `make build`: build Docker image
+    - Rebuilding the image is only needed if the dependencies or Docker setup changes
+- `make docker`: up Docker container with a Uvicorn server on port `8000`
+
+> [!NOTE]
+> Both development servers automatically reload when any changes are made in the `/app` folder
+
+### Run Dockerized production server
+- Set env variable `TARGET=production`
+- `make build`: build Docker image
+    - The image must be rebuilt on any change
+- `make docker`: up Docker container with a Gunicorn server running multiple workers on port `8000`
