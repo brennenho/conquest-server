@@ -15,6 +15,19 @@ def get_token_secret() -> str | None:
 
 
 def decode_token(token: str) -> dict:
+    """
+    Decode a JSON Web Token (JWT) and return the decoded payload.
+
+    Args:
+        token (str): The JWT to decode.
+
+    Returns:
+        dict: The decoded payload as a dictionary.
+
+    Raises:
+        jwt.ExpiredSignatureError: If the token has expired.
+        jwt.InvalidTokenError: If the token is invalid.
+    """
     try:
         return jwt.decode(token, get_token_secret(), algorithms=["HS256"])
     except jwt.ExpiredSignatureError:
@@ -24,6 +37,15 @@ def decode_token(token: str) -> dict:
 
 
 def encode_token(payload: dict) -> str:
+    """
+    Encodes the given payload into a JSON Web Token (JWT) string that expires in 24 hours.
+
+    Args:
+        payload (dict): The payload to be encoded into the token.
+
+    Returns:
+        str: The encoded JWT string.
+    """
     return jwt.encode(
         {**payload, "exp": datetime.now() + timedelta(days=1)},
         get_token_secret(),

@@ -12,7 +12,7 @@ from app.utils.constants import ALLOWED_ORIGINS
 logger = get_logger(__name__)
 
 
-# checks watchlist every interval while server is running
+# Check watchlist at a set interval while server is running
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     task = asyncio.create_task(continuous_check())
@@ -22,9 +22,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-# app = FastAPI()
 
-# authentication to validate api requests
+# Validate API requests
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
@@ -33,12 +32,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Routers
 app.include_router(admin.router)
 app.include_router(users.router)
 app.include_router(watchlist.router)
 app.include_router(search.router)
 
 
+# Root endpoint for health checks
 @app.get("/")
 async def root():
     return {"status": "ok"}
