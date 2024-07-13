@@ -9,6 +9,18 @@ class CourseSearcher:
         combinations = self.all_combonations(courses)
         combinations = self.section_combination(combinations)
         schedules = []
+
+        def sort_schedules(schedules: list):
+            def start_to_end_time(sections: list[str]):
+                self.sort_sections(sections, start_time=True)
+                start_time = int(sections[0][5].replace(":", ""))
+                self.sort_sections(sections, start_time=False)
+                end_time = self.get_end_time(sections)
+                return end_time - start_time
+
+            schedules.sort(key=start_to_end_time)
+            return schedules
+
         for combo in combinations:
             timeClient = TimeClient()
             potential_schedule: list = []
@@ -27,7 +39,7 @@ class CourseSearcher:
                     break
             if not time_conflict:
                 schedules.append(potential_schedule)
-        return schedules
+        return sort_schedules(schedules)
 
     def section_combination(self, combo: list):
         if len(combo) == 0:
@@ -112,15 +124,25 @@ class CourseSearcher:
             required_sections.add(section[8])
         return {course: required_sections}
 
-    def sort_sections(self, sections: list):
+    def sort_sections(self, sections: list, start_time=True):
         def extract_time(list):
             try:
+                key = 5 if start_time else 6
                 return int(list[5].replace(":", ""))
             except Exception:
                 return 0
 
         sections.sort(key=extract_time)
         return sections
+
+    def get_end_time(self, sections: list, ignore_quiz=True):
+        if not ignore_quiz:
+            return int(sections[-1][6].replace(":", ""))
+        for i in range(len(sections) - 1, -1, -1):
+            section = sections[i]
+            if section[8] != "Qz":
+                return int(section[6].replace(":", ""))
+        return 0
 
 
 class TimeClient:
