@@ -3,24 +3,22 @@ import itertools
 
 
 class CourseSearcher:
+    def sort_schedules(self, schedules: list):
+        def start_to_end_time(sections: list[str]):
+            self.sort_sections(sections, start_time=True)
+            start_time = int(sections[0][5].replace(":", ""))
+            self.sort_sections(sections, start_time=False)
+            end_time = self.get_end_time(sections)
+            return end_time - start_time
+
+        schedules.sort(key=start_to_end_time)
+        return schedules
 
     def get_recommendations(self, selected_courses: list):
         courses = self.search_courses(selected_courses)
         combinations = self.all_combonations(courses)
         combinations = self.section_combination(combinations)
         schedules = []
-
-        def sort_schedules(schedules: list):
-            def start_to_end_time(sections: list[str]):
-                self.sort_sections(sections, start_time=True)
-                start_time = int(sections[0][5].replace(":", ""))
-                self.sort_sections(sections, start_time=False)
-                end_time = self.get_end_time(sections)
-                return end_time - start_time
-
-            schedules.sort(key=start_to_end_time)
-            return schedules
-
         for combo in combinations:
             timeClient = TimeClient()
             potential_schedule: list = []
@@ -39,7 +37,7 @@ class CourseSearcher:
                     break
             if not time_conflict:
                 schedules.append(potential_schedule)
-        return sort_schedules(schedules)
+        return self.sort_schedules(schedules)
 
     def section_combination(self, combo: list):
         if len(combo) == 0:
@@ -128,7 +126,7 @@ class CourseSearcher:
         def extract_time(list):
             try:
                 key = 5 if start_time else 6
-                return int(list[5].replace(":", ""))
+                return int(list[key].replace(":", ""))
             except Exception:
                 return 0
 
@@ -146,21 +144,38 @@ class CourseSearcher:
 
 
 class TimeClient:
-    def __check_time_overlap(
-        self, start_time1: str, end_time1: str, start_time2: str, end_time2: str
-    ):
+    @staticmethod
+    def _check_time_overlap(
+        start_time1: str, end_time1: str, start_time2: str, end_time2: str
+    ) -> bool:
         """
-        returns boolean whether these times overlap or not, True if overlap
-        """
-        min1 = int(start_time1.replace(":", ""))
-        max1 = int(end_time1.replace(":", ""))
-        min2 = int(start_time2.replace(":", ""))
-        max2 = int(end_time2.replace(":", ""))
+        Check if two time intervals overlap.
 
+        Args:
+            start_time1 (str): Start time of the first interval in HH:MM format.
+            end_time1 (str): End time of the first interval in HH:MM format.
+            start_time2 (str): Start time of the second interval in HH:MM format.
+            end_time2 (str): End time of the second interval in HH:MM format.
+
+        Returns:
+            bool: True if the intervals overlap, False otherwise.
+        """
+        min1, max1 = int(start_time1.replace(":", "")), int(end_time1.replace(":", ""))
+        min2, max2 = int(start_time2.replace(":", "")), int(end_time2.replace(":", ""))
         return not ((max2 - min1) * (min2 - max1) >= 0)
 
-    def daysToBitmask(self, days: str):
-        daysMap: dict[str, int] = {
+    @staticmethod
+    def days_to_bitmask(days: str) -> int:
+        """
+        Convert a string of days into a bitmask representation.
+
+        Args:
+            days (str): A string representing days (e.g., "MWF" for Monday, Wednesday, and Friday).
+
+        Returns:
+            int: Bitmask representation of the days.
+        """
+        days_map = {
             "M": 1 << 0,
             "T": 1 << 1,
             "W": 1 << 2,
@@ -168,33 +183,50 @@ class TimeClient:
             "F": 1 << 4,
         }
         bitmask = 0
-        for i in days:
-            bit: int | None = daysMap.get(i)
-            if not bit:
-                return
+        for day in days:
+            bit = days_map.get(day, 0)
             bitmask |= bit
         return bitmask
 
     def overlaps(self, booked_sections: list, new_section: list) -> bool:
+        """
+        Check if a new section overlaps with any of the booked sections.
+
+        Args:
+            booked_sections (list): List of booked sections.
+            new_section (list): New section to be checked for overlap.
+
+        Returns:
+            bool: True if there is an overlap, False otherwise.
+        """
         try:
-            days = new_section[7]
-            newStartTime = new_section[5]
-            newEndTime = new_section[6]
-            if not days or not newStartTime or not newEndTime:
+            new_days = new_section[7]
+            new_start_time = new_section[5]
+            new_end_time = new_section[6]
+
+            if not new_days or not new_start_time or not new_end_time:
                 return True
-            newDaysBitmask = self.daysToBitmask(days)
-            if len(booked_sections) == 0:
+
+            new_days_bitmask = self.days_to_bitmask(new_days)
+
+            if not booked_sections:
                 return False
+
             for section in booked_sections:
-                existingDaysBitmask = self.daysToBitmask(section[7])
-                existingStartTime = section[5]
-                existingEndTime = section[6]
-                if (newDaysBitmask & existingDaysBitmask) != 0:
+                existing_days_bitmask = self.days_to_bitmask(section[7])
+                existing_start_time = section[5]
+                existing_end_time = section[6]
+
+                if new_days_bitmask & existing_days_bitmask:
                     # Overlapping days
-                    if self.__check_time_overlap(
-                        existingStartTime, existingEndTime, newStartTime, newEndTime
+                    if self._check_time_overlap(
+                        existing_start_time,
+                        existing_end_time,
+                        new_start_time,
+                        new_end_time,
                     ):
                         return True
         except Exception as e:
-            print(e)
+            print(f"Error checking overlap: {e}")
+
         return False
