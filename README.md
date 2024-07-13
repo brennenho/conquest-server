@@ -2,7 +2,8 @@
 ![Python](https://img.shields.io/badge/python-3.11-blue.svg)
 [![style: black](https://img.shields.io/badge/style-black-000000.svg)](https://github.com/psf/black)
 [![lint](https://github.com/brennenho/conquest-server/actions/workflows/lint.yml/badge.svg)](https://github.com/brennenho/conquest-server/actions/workflows/lint.yml)
-[![deploy](https://github.com/brennenho/conquest-server/actions/workflows/deploy.yml/badge.svg)](https://github.com/brennenho/conquest-server/actions/workflows/deploy.yml)
+[![deployment](https://github.com/brennenho/conquest-server/actions/workflows/deploy.yml/badge.svg)](https://github.com/brennenho/conquest-server/actions/workflows/deploy.yml)
+[![health check](https://github.com/brennenho/conquest-server/actions/workflows/healthcheck.yml/badge.svg)](https://github.com/brennenho/conquest-server/actions/workflows/healthcheck.yml)
 
 A python Fast API to serve [Conquest](https://github.com/brennenho/conquest), a chrome extension for USC students.
 
