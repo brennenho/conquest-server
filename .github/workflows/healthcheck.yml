@@ -13,7 +13,7 @@ jobs:
     - name: ping
       run: |
         echo "Pinging server..."
-        response=$(curl -s -o /dev/null -w "%{http_code}" {{ secrets.API_URL }})
+        response=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.API_URL }})
         echo "Response code: $response"
         if [ "$response" -ne 200 ]; then
           echo "[ERROR] API is down"
