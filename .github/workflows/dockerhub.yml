@@ -1,0 +1,24 @@
+name: dockerhub
+on:
+  push:
+    # branches:
+    #   - main
+    paths:
+      - README.md
+      - .github/workflows/dockerhub.yml
+  workflow_dispatch:
+
+jobs:
+  description:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Docker Hub Description
+      uses: peter-evans/dockerhub-description@v4
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: ${{ secrets.DOCKER_USERNAME }}/conquest-server
+        short-description: ${{ github.event.repository.description }}
+        enable-url-completion: true
