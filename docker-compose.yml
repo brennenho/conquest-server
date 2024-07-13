@@ -23,6 +23,7 @@ services:
       - ADMIN_KEY=${ADMIN_KEY}
     depends_on:
       - conquest-db
+    restart: always
 
   conquest-db:
     container_name: conquest-db
@@ -35,6 +36,7 @@ services:
       - POSTGRES_DB=conquest_core
     volumes:
       - conquestdb:/var/lib/postgresql/data
+    restart: always
 
 volumes:
   conquestdb:
