@@ -1,4 +1,5 @@
 import asyncio
+import os
 
 from fastapi import FastAPI, Depends, Body
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,7 +22,11 @@ async def lifespan(app: FastAPI):
     await task
 
 
-app = FastAPI(lifespan=lifespan)
+root_path = ""
+if os.environ.get("TARGET") == "production":
+    root_path = "/conquest-api"
+
+app = FastAPI(lifespan=lifespan, root_path=root_path)
 
 # Validate API requests
 app.add_middleware(

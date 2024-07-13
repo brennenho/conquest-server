@@ -3,14 +3,17 @@ services:
     container_name: conquest-server
     image: conquest-server:latest
     build:
-      context: ../
-      dockerfile: conquest-server/Dockerfile
+      context: .
+      dockerfile: Dockerfile
       target: ${TARGET}
-    platform: linux/amd64
+      args:
+        - ARCH=${ARCH}
+    platform: linux/${ARCH}
     ports:
       - 8000:8000
     environment:
       - PORT=8000
+      - TARGET=${TARGET}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -20,6 +23,7 @@ services:
       - ADMIN_KEY=${ADMIN_KEY}
     depends_on:
       - conquest-db
+    restart: always
 
   conquest-db:
     container_name: conquest-db
@@ -32,6 +36,7 @@ services:
       - POSTGRES_DB=conquest_core
     volumes:
       - conquestdb:/var/lib/postgresql/data
+    restart: always
 
 volumes:
   conquestdb:

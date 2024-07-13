@@ -1,13 +1,18 @@
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.11 as base
+# Get platform architecture from .env
+ARG ARCH
 
-COPY ./conquest-server/requirements.txt /app/requirements.txt
+# Build base image
+FROM --platform=linux/${ARCH} tiangolo/uvicorn-gunicorn-fastapi:python3.11 AS base
 
+# Install dependencies
+COPY ./requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
-COPY ./conquest-server/app /app/app
+COPY ./app /app/app
 
-FROM base as development
+# Execute start scripts depending on environment
+FROM base AS development
 CMD ["/start-reload.sh"]
 
-FROM base as production
+FROM base AS production
 CMD ["/start.sh"]
