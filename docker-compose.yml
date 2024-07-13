@@ -3,10 +3,12 @@ services:
     container_name: conquest-server
     image: conquest-server:latest
     build:
-      context: ../
-      dockerfile: conquest-server/Dockerfile
+      context: .
+      dockerfile: Dockerfile
       target: ${TARGET}
-    platform: linux/amd64
+      args:
+        - ARCH=${ARCH}
+    platform: linux/${ARCH}
     ports:
       - 8000:8000
     environment:
