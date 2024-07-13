@@ -16,8 +16,8 @@ jobs:
         response=$(curl -s -o /dev/null -w "%{http_code}" {{ secrets.API_URL }})
         echo "Response code: $response"
         if [ "$response" -ne 200 ]; then
-          echo "API is down!"
+          echo "[ERROR] API is down"
           exit 1
         else
-          echo "API is operational"
+          echo "[OK] API is up"
         fi
