@@ -19,8 +19,8 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build --build-arg TARGET=production --build-arg ARCH=arm64 -t ${{ secrets.DOCKER_USERNAME }}/conquest-server:${{ github.sha }} .
-          docker push ${{ secrets.DOCKER_USERNAME }}/conquest-server:${{ github.sha }}
+          docker buildx create --use
+          docker buildx build --build-arg TARGET=${{ secrets.TARGET }} --build-arg ARCH=${{ secrets.ARCH }} --platform linux/arm64 --push -t ${{ secrets.DOCKER_USERNAME }}/conquest-server:${{ github.sha }} .
 
   deploy:
     runs-on: ubuntu-latest
