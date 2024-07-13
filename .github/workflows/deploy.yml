@@ -20,7 +20,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker buildx create --use
-          docker buildx build --build-arg TARGET=production --build-arg ARCH=arm64 --platform linux/arm64 --push -t ${{ secrets.DOCKER_USERNAME }}/conquest-server:${{ github.sha }} .
+          docker buildx build --build-arg TARGET=production --build-arg ARCH=arm64 --platform linux/arm64 --push -t ${{ secrets.DOCKER_USERNAME }}/conquest-server:latest .
   
   deploy:
     runs-on: ubuntu-latest
