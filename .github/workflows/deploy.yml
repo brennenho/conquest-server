@@ -46,4 +46,8 @@ jobs:
         run: |
           ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
             cd ${{ secrets.REMOTE_PATH }}
+            sed -i 's|conquest-server:latest|${{ secrets.DOCKER_USERNAME }}/conquest-server:latest|g' docker-compose.yml
+            docker compose down
+            docker compose pull
+            docker compose up -d
           EOF
