@@ -10,5 +10,5 @@ def recommend_courses(courses: list = Body(..., embed=True)):
     client = CourseSearcher()
     result = client.get_recommendations(courses)
     if len(result) == 0:
-        return JSONResponse(content=False, status_code=406)
+        return JSONResponse(content={"isValid": False}, status_code=406)
     return JSONResponse(content=result, status_code=200)

@@ -5,10 +5,21 @@ import itertools
 class CourseSearcher:
     def sort_schedules(self, schedules: list):
         def start_to_end_time(sections: list[str]):
-            classes = {"M": (2400,-1), "T":(2400,-1), "W":(2400,-1), "H":(2400,-1), "F":(2400,-1)}
+            classes = {
+                "M": (2400, -1),
+                "T": (2400, -1),
+                "W": (2400, -1),
+                "H": (2400, -1),
+                "F": (2400, -1),
+            }
             for section in sections:
                 for day in section[7]:
-                    classes[day] = (min(classes[day][0],self.extract_time(section)), max(classes[day][1],self.extract_time(section, by_start=False)))
+                    classes[day] = (
+                        min(classes[day][0], self.extract_time(section)),
+                        max(
+                            classes[day][1], self.extract_time(section, by_start=False)
+                        ),
+                    )
             longest_day = 0
             days_with_class = 5
             for item in classes.values():
@@ -16,15 +27,18 @@ class CourseSearcher:
                     days_with_class -= 1
                 longest_day = max(item[1] - item[0], longest_day)
             return longest_day << days_with_class
+
         schedules.sort(key=start_to_end_time)
         batch_size = len(schedules[0])
         schedules = [course[1] for combo in schedules for course in combo]
         return schedules, batch_size
 
     def get_recommendations(self, selected_courses: list):
-        courses = self.search_courses(selected_courses)
-        combinations = self.all_combonations(courses)
-        combinations = self.section_combination(combinations)
+        if len(selected_courses) == 0:
+            return []
+        courses = self.get_scheduled_courses(selected_courses)
+        combinations = self.get_course_combonations(courses)
+        combinations = self.get_potential_schedules(combinations)
         schedules = []
         for combo in combinations:
             timeClient = TimeClient()
@@ -46,26 +60,30 @@ class CourseSearcher:
                 schedules.append(potential_schedule)
         return self.sort_schedules(schedules)
 
-    def section_combination(self, combo: list):
+    def get_potential_schedules(self, combo: list):
         if len(combo) == 0:
             return {}
         combinations = []
         for combos in combo:
             classes: dict[str, dict[str, set]] = {}
             for section in combos:
+                # If the course is not registered yet
                 if not classes.get(section[2]):
                     classes[section[2]] = {}
                     required_types = self.get_required_course_types(section[2]).values()
                     course = classes.get(section[2])
+                    # Instantiate the required course types here
                     if course == {}:
                         for _ in required_types:
                             for types in _:
                                 course.update({types: set()})
+                # Add the section to the right course and course type
                 course_name = classes.get(section[2])
                 if isinstance(course_name, dict):
                     course_name_type = course_name.get(section[8])
                     if isinstance(course_name_type, set):
                         course_name_type.add(section)
+            # Get one of each required course type and append it as a possible schedule
             courses = {}
             for key, value in classes.items():
                 values = value.values()
@@ -77,7 +95,7 @@ class CourseSearcher:
                 combinations.append(combo)
         return combinations
 
-    def all_combonations(self, courses: list):
+    def get_course_combonations(self, courses: list):
         if len(courses) == 0:
             return []
         if len(courses) == 1:
@@ -89,13 +107,13 @@ class CourseSearcher:
         combinations = [combo for combo in combinations]
         return combinations
 
-    def search_courses(self, selected: list):
+    def get_scheduled_courses(self, selected: list):
         courses = []
         for course in selected:
-            courses.append(self.get_course_combonations(course))
+            courses.append(self.get_course_divisions(course))
         return courses
 
-    def get_course_combonations(self, course: str) -> list:
+    def get_course_divisions(self, course: str) -> list:
         client = PostgresClient()
         result = client.search_course(course)
         if len(result) == 0:
@@ -128,6 +146,7 @@ class CourseSearcher:
         for section in sections:
             required_sections.add(section[8])
         return {course: required_sections}
+
     def extract_time(self, list, by_start=True, ignore_quiz=True):
         try:
             if ignore_quiz and list[8] == "Qz":
@@ -136,15 +155,6 @@ class CourseSearcher:
             return int(list[key].replace(":", ""))
         except Exception:
             return 0
-
-    def get_end_time(self, sections: list, ignore_quiz=True):
-        if not ignore_quiz:
-            return int(sections[-1][6].replace(":", ""))
-        for i in range(len(sections) - 1, -1, -1):
-            section = sections[i]
-            if section[8] != "Qz":
-                return int(section[6].replace(":", ""))
-        return 0
 
 
 class TimeClient:
