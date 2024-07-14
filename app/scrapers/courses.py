@@ -37,7 +37,7 @@ class CourseParser:
                     "tr", attrs={"data-section-id": True}
                 )
                 for section in sections:
-                    id = section.select_one("td.section, td.section-title").text
+                    id = section.select_one("td.section, td.section-title").text[:5]
                     capacity = section.find("td", class_="registered").text.split(
                         " of "
                     )

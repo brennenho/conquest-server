@@ -32,9 +32,7 @@ class AlertManager:
         self._passwords[email] = password
 
         # Send email to user with password
-        # send_password(email, password)
-
-        logger.debug(f"Password generated: {email} | {password}")
+        send_password(email, password)
 
         # Schedule a task to remove the password after 10 minutes
         # TODO: persist passwords on server reset
