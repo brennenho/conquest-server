@@ -1,4 +1,5 @@
 import asyncio
+import os
 
 from fastapi import FastAPI, Depends, Body
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,12 +8,11 @@ from contextlib import asynccontextmanager
 from app.routers import search, users, watchlist, admin, recommend
 from app.alerts.scheduler import continuous_check
 from app.utils.logger import get_logger
-from app.utils.constants import ALLOWED_ORIGINS
 
 logger = get_logger(__name__)
 
 
-# checks watchlist every interval while server is running
+# Check watchlist at a set interval while server is running
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     task = asyncio.create_task(continuous_check())
@@ -21,20 +21,29 @@ async def lifespan(app: FastAPI):
     await task
 
 
-app = FastAPI(lifespan=lifespan)
-# app = FastAPI()
+root_path = ""
+if os.environ.get("TARGET") == "production":
+    root_path = "/conquest-api"
 
-# authentication to validate api requests
+app = FastAPI(lifespan=lifespan, root_path=root_path)
+
+# Validate API requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
+    allow_origins=os.getenv("ALLOWED_ORIGINS", "").split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Routers
 app.include_router(admin.router)
 app.include_router(users.router)
 app.include_router(watchlist.router)
 app.include_router(search.router)
-app.include_router(recommend.router)
+
+
+# Root endpoint for health checks
+@app.get("/")
+async def root():
+    return {"status": "ok"}

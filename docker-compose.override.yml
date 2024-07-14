@@ -1,0 +1,4 @@
+services:
+  conquest-server:
+    volumes:
+      - ./app:/app/app

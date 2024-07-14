@@ -9,10 +9,12 @@ from app.utils.tokens import generate_random_pass
 logger = get_logger(__name__)
 
 
+# Singleton class to manage all email alerts
 class AlertManager:
     _instance = None
     _passwords: dict[str, str] = {}
 
+    # Singleton pattern
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
             cls._instance = super().__new__(cls, *args, **kwargs)
@@ -28,15 +30,19 @@ class AlertManager:
         self.remove_password(email)
         password: str = generate_random_pass()
         self._passwords[email] = password
-        # send_password(email, password)
-        logger.info(f"Generated password {password} for {email}")
+
+        # Send email to user with password
+        send_password(email, password)
+
         # Schedule a task to remove the password after 10 minutes
+        # TODO: persist passwords on server reset
         asyncio.get_event_loop().call_later(600, self.remove_password, email)
+
         return password
 
     def remove_password(self, email: str) -> None:
         """
-        Remove a one-time password for a user.
+        Remove an existing one-time password for a user.
 
         Returns:
             None
@@ -51,9 +57,8 @@ class AlertManager:
         Returns:
             bool: True if the password is valid, False otherwise.
         """
-        if email in self._passwords:
-            if self._passwords[email] == password:
-                return True
+        if email in self._passwords and self._passwords[email] == password:
+            return True
         return False
 
     # Checks all functions in watchlist, scraping department info when necessary
@@ -69,19 +74,21 @@ class AlertManager:
             id: str = entry[1]
             dep: str = entry[2]
             if dep not in departments:
-                # scrape info for entire department if not already done
-                departments[dep] = parser.scrape_deparment(dep)
+                # Only scrape department info if it hasn't already been scraped
+                departments[dep] = parser.scrape_department(dep)
 
             seats: list[int] = departments[dep][id]
-            # check if there are seats available
+            # Check if section has openings
             if seats[0] < seats[1]:
                 notifiedSections.add(id)
                 email: str = entry[3]
-                send_course_alert(email, id, seats[1] - seats[0])
-                # logger.info(
-                #     f"Mock alert to {email} about section {id} having {seats[1] - seats[0]} seats."
-                # )
 
-        # remove sections that have openings from watchlist
+                # Send email alert to user about section openings
+                send_course_alert(email, id, seats[1] - seats[0])
+                logger.debug(
+                    f"Section Alert ({email}): section {id} has {seats[1] - seats[0]} seats"
+                )
+
+        # Remove notified sections from watchlist
         for section in notifiedSections:
             client.delete_from_watchlist(section)

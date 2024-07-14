@@ -1,4 +1,26 @@
 services:
+  conquest-server:
+    container_name: conquest-server
+    image: conquest-server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ${TARGET}
+      args:
+        - ARCH=${ARCH}
+        - LOG_LEVEL=${LOG_LEVEL}
+    platform: linux/${ARCH}
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    environment:
+      - PORT=8000
+      - POSTGRES_HOST=conquest-db
+    depends_on:
+      - conquest-db
+    restart: always
+
   conquest-db:
     container_name: conquest-db
     image: postgres
@@ -10,6 +32,7 @@ services:
       - POSTGRES_DB=conquest_core
     volumes:
       - conquestdb:/var/lib/postgresql/data
+    restart: always
 
 volumes:
   conquestdb:

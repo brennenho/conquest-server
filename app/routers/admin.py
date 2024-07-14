@@ -2,10 +2,14 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 from app.dependencies import get_auth_header
+from app.utils.logger import get_logger
 from app.scrapers.rmp import RmpParser
 from app.api.courses import CourseClient
 from app.database.postgres_client import PostgresClient
 
+# This router handles all admin tasks and requires authentication to access
+
+logger = get_logger(__name__)
 router = APIRouter(
     prefix="/admin", tags=["admin"], dependencies=[Depends(get_auth_header)]
 )
@@ -13,6 +17,13 @@ router = APIRouter(
 
 @router.post("/scrape-rmp")
 def scrape_rmp():
+    """
+    Scrapes RateMyProfessors website to retrieve information about professors
+    and stores the data in a PostgreSQL database.
+
+    Returns:
+        JSONResponse: A JSON response indicating the success or failure of the operation.
+    """
     try:
         client = PostgresClient()
         parser = RmpParser()
@@ -25,13 +36,20 @@ def scrape_rmp():
                 values["department"],
                 values["rating"],
             )
-        return JSONResponse(content="success", status_code=200)
+        return JSONResponse(content=True, status_code=200)
     except RuntimeError:
+        logger.error("Unable to scrape RateMyProfessor")
         return JSONResponse(content=False, status_code=500)
 
 
 @router.post("/scrape-courses")
 def scrape_courses():
+    """
+    Scrapes courses from USC website and adds them to the database.
+
+    Returns:
+        JSONResponse: A JSON response indicating the success or failure of the operation.
+    """
     try:
         parser = CourseClient()
         client = PostgresClient()
@@ -54,7 +72,7 @@ def scrape_courses():
                         course["days"],
                         course["class_type"],
                     )
-        return JSONResponse(content="succses", status_code=200)
+        return JSONResponse(content=True, status_code=200)
     except Exception as e:
-        print(e)
+        logger.error(f"Error scraping courses: {e}")
         return JSONResponse(content=False, status_code=500)

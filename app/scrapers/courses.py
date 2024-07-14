@@ -13,7 +13,16 @@ logger = get_logger(__name__)
 class CourseParser:
 
     # scrape section info by department
-    def scrape_deparment(self, dep: str) -> dict:
+    def scrape_department(self, dep: str) -> dict:
+        """
+        Scrapes the department page for course information.
+
+        Args:
+            dep (str): The department code.
+
+        Returns:
+            dict: A dictionary containing the found sections and their capacities.
+        """
         # get website code
         response = requests.get(BASE_URL + TERM_URL + "classes/" + dep)
         soup = BeautifulSoup(response.text, "lxml")
@@ -28,7 +37,7 @@ class CourseParser:
                     "tr", attrs={"data-section-id": True}
                 )
                 for section in sections:
-                    id = section.select_one("td.section, td.section-title").text
+                    id = section.select_one("td.section, td.section-title").text[:5]
                     capacity = section.find("td", class_="registered").text.split(
                         " of "
                     )

@@ -1,10 +1,8 @@
 CLASS_API_BASE = "http://web-app.usc.edu/web/soc/api/classes/"
 SEMESTER = "20243"
 
-ALLOWED_ORIGINS = [
-    "chrome-extension://ijnageikchmnfaoadoiibnncahopcnnh",
-    "https://webreg.usc.edu",
-]
+SERVER_EMAIL = "conquest@brennen.dev"
+WATCHLIST_CHECK_INTERVAL = 60
 
 RMP_BASE_URL = "https://www.ratemyprofessors.com/graphql"
 
