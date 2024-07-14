@@ -10,12 +10,16 @@ class CourseSearcher:
                 for day in section[7]:
                     classes[day] = (min(classes[day][0],self.extract_time(section)), max(classes[day][1],self.extract_time(section, by_start=False)))
             longest_day = 0
+            days_with_class = 5
             for item in classes.values():
+                if item[0] == 2400:
+                    days_with_class -= 1
                 longest_day = max(item[1] - item[0], longest_day)
-            return longest_day
-
+            return longest_day << days_with_class
         schedules.sort(key=start_to_end_time)
-        return schedules
+        batch_size = len(schedules[0])
+        schedules = [course[1] for combo in schedules for course in combo]
+        return schedules, batch_size
 
     def get_recommendations(self, selected_courses: list):
         courses = self.search_courses(selected_courses)
