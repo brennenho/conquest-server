@@ -8,12 +8,17 @@ services:
       target: ${TARGET}
       args:
         - ARCH=${ARCH}
+        - LOG_LEVEL=${LOG_LEVEL}
     platform: linux/${ARCH}
+    volumes:
+      - ./app:/app/app
     ports:
       - 8000:8000
     environment:
       - PORT=8000
       - TARGET=${TARGET}
+      - LOG_LEVEL=${LOG_LEVEL}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}

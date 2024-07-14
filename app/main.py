@@ -8,7 +8,6 @@ from contextlib import asynccontextmanager
 from app.routers import search, users, watchlist, admin
 from app.alerts.scheduler import continuous_check
 from app.utils.logger import get_logger
-from app.utils.constants import ALLOWED_ORIGINS
 
 logger = get_logger(__name__)
 
@@ -31,7 +30,7 @@ app = FastAPI(lifespan=lifespan, root_path=root_path)
 # Validate API requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
+    allow_origins=os.getenv("ALLOWED_ORIGINS", "").split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
