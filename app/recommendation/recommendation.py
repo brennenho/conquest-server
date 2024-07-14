@@ -5,11 +5,14 @@ import itertools
 class CourseSearcher:
     def sort_schedules(self, schedules: list):
         def start_to_end_time(sections: list[str]):
-            self.sort_sections(sections, start_time=True)
-            start_time = int(sections[0][5].replace(":", ""))
-            self.sort_sections(sections, start_time=False)
-            end_time = self.get_end_time(sections)
-            return end_time - start_time
+            classes = {"M": (2400,-1), "T":(2400,-1), "W":(2400,-1), "H":(2400,-1), "F":(2400,-1)}
+            for section in sections:
+                for day in section[7]:
+                    classes[day] = (min(classes[day][0],self.extract_time(section)), max(classes[day][1],self.extract_time(section, by_start=False)))
+            longest_day = 0
+            for item in classes.values():
+                longest_day = max(item[1] - item[0], longest_day)
+            return longest_day
 
         schedules.sort(key=start_to_end_time)
         return schedules
@@ -121,17 +124,14 @@ class CourseSearcher:
         for section in sections:
             required_sections.add(section[8])
         return {course: required_sections}
-
-    def sort_sections(self, sections: list, start_time=True):
-        def extract_time(list):
-            try:
-                key = 5 if start_time else 6
-                return int(list[key].replace(":", ""))
-            except Exception:
+    def extract_time(self, list, by_start=True, ignore_quiz=True):
+        try:
+            if ignore_quiz and list[8] == "Qz":
                 return 0
-
-        sections.sort(key=extract_time)
-        return sections
+            key = 5 if by_start else 6
+            return int(list[key].replace(":", ""))
+        except Exception:
+            return 0
 
     def get_end_time(self, sections: list, ignore_quiz=True):
         if not ignore_quiz:
