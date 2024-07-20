@@ -29,9 +29,8 @@ class CourseSearcher:
             return longest_day << days_with_class
 
         schedules.sort(key=start_to_end_time)
-        batch_size = len(schedules[0])
-        schedules = [course[1] for combo in schedules for course in combo]
-        return schedules, batch_size
+        schedules = [[course[1] for course in group] for group in schedules]
+        return schedules
 
     def get_recommendations(self, selected_courses: list):
         if len(selected_courses) == 0:
